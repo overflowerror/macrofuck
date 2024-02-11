@@ -30,8 +30,10 @@ obj/%.o: src/%.c obj
 macrofuck: $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $^
 
-test:
-	@echo "Not yet implemented"
+test: macrofuck FORCE
+	./test/tests.sh "./macrofuck"
+
+FORCE: ;
 
 clean:
 	@echo "Cleaning up"
