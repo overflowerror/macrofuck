@@ -2,22 +2,7 @@
 
 #include "ast.h"
 #include "error.h"
-
-void* safe_malloc(size_t length) {
-	void* result = malloc(length);
-	if (!result) {
-		panic("safe_malloc");
-	}
-	return result;
-}
-
-void* safe_realloc(void* ptr, size_t length) {
-	void* new = realloc(ptr, length);
-	if (!new) {
-		panic("safe_realloc");
-	}
-	return new;
-}
+#include "alloc.h"
 
 #define _new(n, t) struct t* n = safe_malloc(sizeof(struct t))
 
