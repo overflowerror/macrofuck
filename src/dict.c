@@ -9,7 +9,7 @@
 int hash_string(const char* str) {
 	int result = 0;
 	while (str* != '\0') {
-		result ^= str*;
+		result = str* + 31 * result;
 		str++;
 	}
 	return result;
