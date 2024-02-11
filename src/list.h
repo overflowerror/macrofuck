@@ -26,6 +26,8 @@ void* list_ensure_space(void*, size_t, size_t);
 		list_header(l)->length++;\
 	)
 
+void list_remove(void*, size_t, size_t);
+
 void list_free(void*);
 
 #endif

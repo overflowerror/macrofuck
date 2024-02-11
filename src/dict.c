@@ -94,3 +94,15 @@ long long dict_geti(dict_t* dict, const char* key) {
 		return pair->i;
 	}
 }
+
+void dict_remove(dict_t* dict, const char* key) {
+	dict_bucket_t bucket = dict_find_bucket(dict, key);
+	
+	size_t bucket_size = list_size(bucket);
+	for (size_t i = 0; i < bucket_size; i++) {
+		if (strcmp(bucket[i].key, key) == 0) {
+			list_remove(bucket, sizeof(struct dict_pair), i);
+			return;
+		}
+	}
+}

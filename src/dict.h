@@ -29,4 +29,6 @@ bool dict_has(dict_t*, const char*);
 void* dict_get(dict_t*, const char*);
 long long dict_geti(dict_t*, const char*);
 
+void dict_remove(dict_t*, const char*);
+
 #endif

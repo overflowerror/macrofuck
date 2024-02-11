@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "list.h"
 #include "alloc.h"
@@ -34,4 +35,18 @@ void* list_ensure_space(void* ptr, size_t element_size, size_t additional) {
 
 void list_free(void* ptr) {
 	free(list_header(ptr));
+}
+
+void list_remove(void* ptr, size_t element_size, size_t index) {
+	struct list_header* header = list_header(ptr);
+
+	if (header->length > 1) {
+		memmove(
+			ptr + index * element_size,
+			ptr + (index + 1) * element_size,
+			(header->length - index - 1) * element_size
+		);
+	}
+
+	header->length--;
 }
