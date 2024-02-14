@@ -21,6 +21,7 @@ extern struct program* program;
 	struct expression* expr;
 	long long number;
 	char ch;
+	char* str;
 }
 
 %type <program> stats
@@ -29,6 +30,7 @@ extern struct program* program;
 
 %token <number> NUM 
 %token <ch> CHAR
+%token <str> STR
 %token SEMICOLON
 %token PRINT
 

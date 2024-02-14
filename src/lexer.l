@@ -16,16 +16,30 @@ char		"'"."'"
 %option yylineno
 
 %x COMMENT
+%x STRING
+
+%{
+
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+
+#include "y.tab.h"
+
+#include "strbuf.h"
+#include "error.h"
+
+%}
+
 %%
 
 %{
-#include <stdlib.h>
-#include <stdbool.h>
 
-#include "y.tab.h"
+strbuf_t strbuf = NULL;
+
 %}
 
-<*>"/*"		{ BEGIN(COMMENT); }
+<INITIAL>"/*"	{ BEGIN(COMMENT); }
 <COMMENT>"*/"	{ BEGIN(INITIAL); }
 <COMMENT>[^*\n]	{ }
 <COMMENT>\n	{ }
@@ -36,6 +50,15 @@ char		"'"."'"
 <INITIAL>{print}		{ return PRINT; }
 <INITIAL>";"			{ return SEMICOLON; }
 
+<INITIAL>\"		{ BEGIN STRING; strbuf_clear(strbuf); }
+<STRING>[^\\"\n]*	{ strbuf_append(strbuf, yytext); }
+<STRING>\\n		{ strbuf_append_c(strbuf, '\n'); }
+<STRING>\\t		{ strbuf_append_c(strbuf, '\t'); }
+<STRING>\\[0-7]*	{ strbuf_append_c(strbuf, strtol(yytext+1, 0, 8)); }
+<STRING>\\[\\"]		{ strbuf_append_c(strbuf, yytext[1]); }
+<STRING>\"		{ yylval.str = strdup(strbuf); BEGIN INITIAL; return STR; }
+<STRING>\\.		{ lex_panic("invalid escape: %s\n", yytext); }
+<STRING>\n		{ lex_panic("newline in string\n"); }
 
 
 <INITIAL>{hex}		{ yylval.number = strtol(yytext + 2, NULL, 16); return NUM; }
@@ -45,4 +68,4 @@ char		"'"."'"
 <INITIAL>{char}		{ yylval.ch = yytext[1]; return CHAR; }
 <INITIAL>{whitespace}+	{ }
 
-<INITIAL>.		{ fprintf(stderr, "lexical error in line %d.\n", yylineno); exit(1); }
+<INITIAL>.		{ lex_panic("unknown token: %s\n", yytext); }

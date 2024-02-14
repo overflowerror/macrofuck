@@ -66,6 +66,10 @@ void codegen_print_statement(FILE* out, band_t* band, struct print_statement sta
 	move_to(out, band, region->start);
 
 	fprintf(out, ".");
+	for (size_t i = 1; i < region->size; i++) {
+		fprintf(out, ">.");
+	}
+	band->position += region->size;
 
 	region_used(band, region);
 }
