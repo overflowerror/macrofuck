@@ -4,6 +4,7 @@
 
 #include "error.h"
 #include "ast.h"
+#include "codegen.h"
 
 #define EXIT_ARGS_ERROR (3)
 
@@ -55,6 +56,11 @@ int main(int argc, char** argv) {
 
 	yyin = input;
 	int result = yyparse();
+	if (result != 0) {
+		return result;
+	}
+
+	result = codegen(output, program);
 	if (result != 0) {
 		return result;
 	}
