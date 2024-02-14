@@ -18,6 +18,7 @@ typedef struct {
 } region_t;
 
 typedef struct {
+	size_t position;
 	region_t** regions;
 	dict_t* variables;
 	region_t** band;

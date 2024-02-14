@@ -8,9 +8,10 @@
 
 band_t* band_init(void) {
 	band_t* band = safe_malloc(sizeof(band_t));
+	band->position = 0;
 	band->regions = list_new(region_t);
 	band->variables = dict_new();
-	band->addr_lookup = list_new(region_t);
+	band->band = list_new(region_t);
 	return band;
 }
 
@@ -112,5 +113,5 @@ void band_region_free(band_t* band, region_t* region) {
 }
 
 void band_region_free_raw(band_t* band, band_addr_t addr) {
-	band_free(band, band->band[addr]);
+	band_region_free(band, band->band[addr]);
 }

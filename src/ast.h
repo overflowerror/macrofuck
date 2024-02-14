@@ -56,7 +56,6 @@ struct program {
 };
 
 struct program* program_new(void);
-void program_init(struct program*);
 void program_add_statement(struct program*, struct statement*);
 
 struct statement* print_statement_new(struct expression*);

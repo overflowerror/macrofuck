@@ -5,7 +5,7 @@
 #include "alloc.h"
 
 void* list_allocate(size_t element_size, size_t initial_capacity) {
-	struct list_header* header = safe_alloc(sizeof(struct list_header) + initial_capacity * element_size);
+	struct list_header* header = safe_malloc(sizeof(struct list_header) + initial_capacity * element_size);
 
 	header->capacity = initial_capacity;
 	header->length = 0;
@@ -42,8 +42,8 @@ void list_remove(void* ptr, size_t element_size, size_t index) {
 
 	if (header->length > 1) {
 		memmove(
-			ptr + index * element_size,
-			ptr + (index + 1) * element_size,
+			((char*) ptr) + index * element_size,
+			((char*) ptr) + (index + 1) * element_size,
 			(header->length - index - 1) * element_size
 		);
 	}

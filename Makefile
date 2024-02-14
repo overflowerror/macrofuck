@@ -7,7 +7,7 @@ YFLAGS   = -d
 LEX      = lex
 LEXFLAGS =
 
-OBJS     = obj/main.o obj/lex.yy.o obj/y.tab.o obj/codegen.o obj/error.o obj/ast.o
+OBJS     = obj/main.o obj/lex.yy.o obj/y.tab.o obj/codegen.o obj/error.o obj/ast.o obj/alloc.o obj/dict.o obj/list.o obj/band.o
 DEPS     = $(OBJS:%.o=%.d)
 
 -include $(DEPS)
