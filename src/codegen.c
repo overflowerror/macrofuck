@@ -79,6 +79,8 @@ void codegen_statement(FILE* out, band_t* band, struct statement* statement) {
 			fprintf(stderr, "statement kind: %d\n", statement->kind);
 			panic("unknown statement kind");
 	}
+	// add newline after each statement
+	fprintf(out, "\n");
 }
 
 int codegen(FILE* out, struct program* program) {
