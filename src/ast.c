@@ -45,3 +45,14 @@ struct expression* literal_expression_char_new(char c) {
 	};
 	return expr;
 }
+
+struct expression* literal_expression_str_new(char* s) {
+	_new(expr, expression);
+	expr->kind = LITERAL;
+	expr->type = STRING;
+	expr->literal = (struct literal_expression) {
+		.kind = STRING_LITERAL,
+		.str = s,
+	};
+	return expr;
+}

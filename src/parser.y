@@ -76,6 +76,9 @@ literal:  NUM
 		{
 			$$ = literal_expression_char_new($1);
 		}
+	| STR {
+			$$ = literal_expression_str_new($1);
+		}
 
 %%
 

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "codegen.h"
 #include "ast.h"
@@ -8,11 +9,11 @@
 
 
 static void move_to(FILE* out, band_t* band, size_t target) {
-	while (target < band->position) {
+	while (target > band->position) {
 		fprintf(out, ">");
 		band->position++;	
 	}
-	while (target > band->position) {
+	while (target < band->position) {
 		fprintf(out, "<");
 		band->position--;
 	}
@@ -34,14 +35,26 @@ static void reset_region(FILE* out, band_t* band, region_t* region) {
 	// TODO
 }
 
+void codegen_add_char(FILE* out, band_t* band, size_t position, char c) {
+	move_to(out, band, position);
+	print_repeat(out, c, "+");
+}
+
 region_t* codegen_literal_expr(FILE* out, band_t* band, struct literal_expression expr) {
 	region_t* region = NULL;
 	switch(expr.kind) {
 		case CHAR_LITERAL:
 			region = band_allocate_tmp(band, 1);
-			move_to(out, band, region->start);
-			print_repeat(out, expr.ch, "+");
+			codegen_add_char(out, band, region->start, expr.ch);
 			break;
+		case STRING_LITERAL: {
+			size_t l = strlen(expr.str); // don't copy \0
+			region = band_allocate_tmp(band, strlen(expr.str));
+			for (size_t i = 0; i < l; i++) {
+				codegen_add_char(out, band, region->start + i, expr.str[i]);
+			}
+			break;
+		}
 		default:
 			fprintf(stderr, "literal kind: %d\n", expr.kind);
 			panic("unknown literal kind");

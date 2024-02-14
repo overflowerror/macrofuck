@@ -27,7 +27,8 @@ struct literal_expression {
 	enum literal_kind kind;
 	union {
 		long long number;
-		char ch;	
+		char ch;
+		char* str;	
 	};
 };
 
@@ -61,6 +62,7 @@ void program_add_statement(struct program*, struct statement*);
 struct statement* print_statement_new(struct expression*);
 
 struct expression* literal_expression_char_new(char);
+struct expression* literal_expression_str_new(char*);
 struct expression* literal_expression_num_new(long long);
 
 #endif 
