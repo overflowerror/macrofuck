@@ -9,6 +9,7 @@
 
 
 static void move_to(FILE* out, band_t* band, size_t target) {
+	fprintf(stderr, "target: %zu, current: %zu\n", target, band->position);
 	while (target > band->position) {
 		fprintf(out, ">");
 		band->position++;	
@@ -82,7 +83,7 @@ void codegen_print_statement(FILE* out, band_t* band, struct print_statement sta
 	for (size_t i = 1; i < region->size; i++) {
 		fprintf(out, ">.");
 	}
-	band->position += region->size;
+	band->position += region->size - 1;
 
 	region_used(band, region);
 }
