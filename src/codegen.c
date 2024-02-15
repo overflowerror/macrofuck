@@ -33,7 +33,10 @@ static inline void print_repeat(FILE* out, size_t n, char* s) {
 }
 
 static void reset_region(FILE* out, band_t* band, region_t* region) {
-	// TODO
+	for (size_t i = 0; i < region->size; i++) {
+		move_to(out, band, region->start + i);
+		fprintf(out, "[-]");
+	}
 }
 
 void codegen_add_char(FILE* out, band_t* band, size_t position, char c) {
@@ -46,11 +49,13 @@ region_t* codegen_literal_expr(FILE* out, band_t* band, struct literal_expressio
 	switch(expr.kind) {
 		case CHAR_LITERAL:
 			region = band_allocate_tmp(band, 1);
+			reset_region(out, band, region);
 			codegen_add_char(out, band, region->start, expr.ch);
 			break;
 		case STRING_LITERAL: {
 			size_t l = strlen(expr.str); // don't copy \0
 			region = band_allocate_tmp(band, strlen(expr.str));
+			reset_region(out, band, region);
 			for (size_t i = 0; i < l; i++) {
 				codegen_add_char(out, band, region->start + i, expr.str[i]);
 			}
