@@ -18,6 +18,8 @@
 
 #define move_to(t) _move_to(out, band, t)
 
+#define set(v) { for (int i = 0; i < v; i++) inc(); }
+
 static void _move_to(FILE* out, band_t* band, size_t target) {
 	while (target > band->position) {
 		next();
@@ -35,12 +37,6 @@ static void region_used(band_t* band, region_t* region) {
 	}
 }
 
-static inline void print_repeat(FILE* out, size_t n, char* s) {
-	for (size_t i = 0; i < n; i++) {
-		fprintf(out, "%s", s);
-	}
-}
-
 static void reset_position(FILE* out, band_t* band, band_addr_t position) {
 	move_to(position);
 	reset();
@@ -55,7 +51,7 @@ static void reset_region(FILE* out, band_t* band, region_t* region) {
 void codegen_add_char(FILE* out, band_t* band, size_t position, char c) {
 	move_to(position);
 	reset();
-	print_repeat(out, c, "+");
+	set(c);
 }
 
 region_t* codegen_literal_expr(FILE* out, band_t* band, struct literal_expression expr) {
@@ -80,7 +76,7 @@ region_t* codegen_literal_expr(FILE* out, band_t* band, struct literal_expressio
 	return region; 
 }
 
-region_t* codegen_variable_expr(FILE* out, band_t* band, struct variable_expression expr) {
+region_t* codegen_variable_expr(FILE* _, band_t* band, struct variable_expression expr) {
 	region_t* region = band_region_for_var(band, expr.id);
 	if (!region) {
 		fprintf(stderr, "unknown variable: %s\n", expr.id);
