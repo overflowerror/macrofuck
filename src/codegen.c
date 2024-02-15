@@ -9,7 +9,6 @@
 
 
 static void move_to(FILE* out, band_t* band, size_t target) {
-	fprintf(stderr, "target: %zu, current: %zu\n", target, band->position);
 	while (target > band->position) {
 		fprintf(out, ">");
 		band->position++;	
