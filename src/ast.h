@@ -11,12 +11,14 @@ enum literal_kind {
 
 enum expression_kind {
 	LITERAL,
+	VARIABLE,
 };
 
 enum expression_type {
 	INTEGER,
 	CHARACTER,
 	STRING,
+	UNKNOWN_TYPE,
 };
 
 enum statement_kind {
@@ -33,11 +35,16 @@ struct literal_expression {
 	};
 };
 
+struct variable_expression {
+	char* id;
+};
+
 struct expression {
 	enum expression_kind kind;
 	enum expression_type type;
 	union {
 		struct literal_expression literal;
+		struct variable_expression variable;
 	};
 };
 
@@ -72,5 +79,6 @@ struct statement* declaration_statement_new(char*, struct expression*);
 struct expression* literal_expression_char_new(char);
 struct expression* literal_expression_str_new(char*);
 struct expression* literal_expression_num_new(long long);
+struct expression* variable_expression_new(char*);
 
 #endif 

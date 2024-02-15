@@ -66,3 +66,13 @@ struct expression* literal_expression_str_new(char* s) {
 	};
 	return expr;
 }
+
+struct expression* variable_expression_new(char* id) {
+	_new(expr, expression);
+	expr->kind = VARIABLE;
+	expr->type = UNKNOWN_TYPE;
+	expr->variable = (struct variable_expression) {
+		.id = id,
+	};
+	return expr;
+}

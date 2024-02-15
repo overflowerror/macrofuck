@@ -70,10 +70,22 @@ region_t* codegen_literal_expr(FILE* out, band_t* band, struct literal_expressio
 	return region; 
 }
 
+region_t* codegen_variable_expr(FILE* out, band_t* band, struct variable_expression expr) {
+	region_t* region = band_region_for_var(band, expr.id);
+	if (!region) {
+		fprintf(stderr, "unknown variable: %s\n", expr.id);
+		exit(1);
+	}
+	return region;
+}
+
 region_t* codegen_expr(FILE* out, band_t* band, struct expression* expr) {
 	switch(expr->kind) {
 		case LITERAL:
 			return codegen_literal_expr(out, band, expr->literal);
+			break;
+		case VARIABLE:
+			return codegen_variable_expr(out, band, expr->variable);
 			break;
 		default:
 			fprintf(stderr, "expression kind: %d\n", expr->kind);

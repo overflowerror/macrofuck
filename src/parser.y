@@ -27,7 +27,7 @@ extern struct program* program;
 
 %type <program> stats
 %type <statement> stat print definition
-%type <expr> expr literal
+%type <expr> expr literal variable
 
 %token <number> NUM 
 %token <ch> CHAR
@@ -75,7 +75,8 @@ definition: VAR ID EQUALS expr
 		}
 ;
 
-expr: literal
+expr: 	  literal
+	| variable
 ;
 
 literal:  NUM
@@ -90,6 +91,13 @@ literal:  NUM
 	| STR {
 			$$ = literal_expression_str_new($1);
 		}
+;
+
+variable: ID
+		{
+			$$ = variable_expression_new($1);
+		}
+;
 
 %%
 
