@@ -5,6 +5,7 @@
 #include "error.h"
 #include "ast.h"
 #include "codegen.h"
+#include "plugins.h"
 
 #define EXIT_ARGS_ERROR (3)
 
@@ -21,9 +22,14 @@ int main(int argc, char** argv) {
 	FILE* input;
 	FILE* output = NULL;
 
+    add_plugin(NULL);
+
 	int opt;
-	while((opt = getopt(argc, argv, "o:")) != -1) {
+	while((opt = getopt(argc, argv, "o:p:")) != -1) {
 		switch(opt) {
+            case 'p':
+                add_plugin(optarg);
+                break;
 			case 'o':
 				output = fopen(optarg, "w+");
 				if (!output) {
@@ -59,6 +65,8 @@ int main(int argc, char** argv) {
 	if (result != 0) {
 		return result;
 	}
+
+    load_plugins();
 
 	result = codegen(output, program);
 	if (result != 0) {
