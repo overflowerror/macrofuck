@@ -45,6 +45,15 @@ struct statement* declaration_statement_new(char* id, struct expression* expr) {
 	return stat;
 }
 
+struct statement* macro_expression(struct expression* expr) {
+    _new(stat, statement);
+    stat->kind = MACRO_STATEMENT;
+    stat->macro = (struct macro_statement) {
+        .expr = expr,
+    };
+    return stat;
+}
+
 struct expression* literal_expression_char_new(char c) {
 	_new(expr, expression);
 	expr->kind = LITERAL;
@@ -75,4 +84,15 @@ struct expression* variable_expression_new(char* id) {
 		.id = id,
 	};
 	return expr;
+}
+
+struct expression* macro_expression_new(char* id, char* arg) {
+    _new(expr, expression);
+    expr->kind = MACRO;
+    expr->type = UNKNOWN_TYPE;
+    expr->macro = (struct macro_expression) {
+            .id = id,
+            .argument = arg,
+    };
+    return expr;
 }

@@ -1,4 +1,5 @@
 %{
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -26,16 +27,19 @@ extern struct program* program;
 }
 
 %type <program> stats
-%type <statement> stat print definition
-%type <expr> expr literal variable
+%type <statement> stat print definition macrostat
+%type <expr> expr literal variable macroexpr
 
 %token <number> NUM 
 %token <ch> CHAR
 %token <str> STR
 %token <id> ID
+
 %token SEMICOLON
-%token VAR
 %token EQUALS
+%token MACRO_CONTENT
+
+%token VAR
 %token PRINT
 
 %start file
@@ -61,6 +65,7 @@ stats:    /* empty */
 
 stat:	  print
 	| definition
+	| macrostat
 ;
 
 print: PRINT expr
@@ -73,6 +78,12 @@ definition: VAR ID EQUALS expr
 		{
 			$$ = declaration_statement_new($2, $4);
 		}
+;
+
+macrostat: macroexpr
+        {
+            $$ = NULL;
+        }
 ;
 
 expr: 	  literal
@@ -97,6 +108,12 @@ variable: ID
 		{
 			$$ = variable_expression_new($1);
 		}
+;
+
+macroexpr: ID MACRO_CONTENT
+        {
+            $$ = NULL;
+        }
 ;
 
 %%

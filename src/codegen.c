@@ -85,12 +85,19 @@ region_t* codegen_variable_expr(FILE* _, band_t* band, struct variable_expressio
 	return region;
 }
 
+region_t* codegen_macro_expr(FILE* out, band_t* band, struct macro_expression expr) {
+    // TODO
+    return band_allocate_tmp(band, 1);
+}
+
 region_t* codegen_expr(FILE* out, band_t* band, struct expression* expr) {
 	switch(expr->kind) {
 		case LITERAL:
 			return codegen_literal_expr(out, band, expr->literal);
 		case VARIABLE:
 			return codegen_variable_expr(out, band, expr->variable);
+        case MACRO:
+            return codegen_macro_expr(out, band, expr->macro);
 		default:
 			fprintf(stderr, "expression kind: %d\n", expr->kind);
 			panic("unknown expression kind");
@@ -153,6 +160,13 @@ void codegen_decl_statement(FILE* out, band_t* band, struct declaration_statemen
 	band_make_var(band, region, statement.id);
 }
 
+void codegen_macro_statement(FILE* out, band_t* band, struct macro_statement statement) {
+    region_t* region = codegen_expr(out, band, statement.expr);
+    if (region->is_temp) {
+        band_region_free(band, region);
+    }
+}
+
 void codegen_statement(FILE* out, band_t* band, struct statement* statement) {
 	switch(statement->kind) {
 		case PRINT_STATEMENT:
@@ -161,6 +175,8 @@ void codegen_statement(FILE* out, band_t* band, struct statement* statement) {
 		case DECL_STATEMENT:
 			codegen_decl_statement(out, band, statement->decl);
 			break;
+        case MACRO_STATEMENT:
+            codegen_macro_statement(out, band, statement->macro);
 		default:
 			fprintf(stderr, "statement kind: %d\n", statement->kind);
 			panic("unknown statement kind");

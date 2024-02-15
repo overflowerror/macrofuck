@@ -19,6 +19,7 @@ id		[a-zA-Z_][a-zA-Z0-9_]*
 
 %x COMMENT
 %x STRING
+%x MACRO
 
 %{
 
@@ -65,6 +66,13 @@ strbuf_t strbuf = NULL;
 <INITIAL>{var}		{ return VAR; }
 <INITIAL>"="		{ return EQUALS; }
 
+<INITIAL>"!("       { BEGIN MACRO; strbuf_clear(strbuf); }
+<MACRO>[^\\)]*     { strbuf_append(strbuf, yytext); }
+<MACRO>"\\)"          { strbuf_append_c(strbuf, yytext[1]); }
+<MACRO>"\\("		    { strbuf_append_c(strbuf, yytext[1]); }
+<MACRO>"\\"           { strbuf_append(strbuf, yytext); }
+<MACRO>")"            { yylval.str = strdup(strbuf); BEGIN INITIAL; return MACRO_CONTENT; }
+
 <INITIAL>{hex}		{ yylval.number = strtol(yytext + 2, NULL, 16); return NUM; }
 <INITIAL>{dec}		{ yylval.number = strtol(yytext, NULL, 10); return NUM; }
 <INITIAL>{oct}		{ yylval.number = strtol(yytext + 1, NULL, 8); return NUM; }
@@ -73,4 +81,4 @@ strbuf_t strbuf = NULL;
 <INITIAL>{id}		{ yylval.id = strdup(yytext); return ID; }
 <INITIAL>{whitespace}+	{ }
 
-<INITIAL>.		{ lex_panic("unknown token: %s\n", yytext); }
+<INITIAL>.		    { lex_panic("unknown token: %s\n", yytext); }
