@@ -35,6 +35,16 @@ struct statement* print_statement_new(struct expression* expr) {
 	return stat;
 }
 
+struct statement* declaration_statement_new(char* id, struct expression* expr) {
+	_new(stat, statement);
+	stat->kind = DECL_STATEMENT;
+	stat->decl = (struct declaration_statement) {
+		.id = id,
+		.value = expr,
+	};
+	return stat;
+}
+
 struct expression* literal_expression_char_new(char c) {
 	_new(expr, expression);
 	expr->kind = LITERAL;

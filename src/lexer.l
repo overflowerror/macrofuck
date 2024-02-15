@@ -6,8 +6,10 @@ hex		"0x"[0-9a-fA-F]+
 bin		"0b"[01]+
 
 print		"print"
+var		"var"
 
 char		"'"."'"
+id		[a-zA-Z_][a-zA-Z0-9_]*
 
 %option noyywrap
 %option nodefault
@@ -47,7 +49,6 @@ strbuf_t strbuf = NULL;
 
 <INITIAL>"//"[^\n]\n		{ /* single line comment */ }
 
-<INITIAL>{print}		{ return PRINT; }
 <INITIAL>";"			{ return SEMICOLON; }
 
 <INITIAL>\"		{ BEGIN STRING; strbuf_clear(strbuf); }
@@ -60,12 +61,16 @@ strbuf_t strbuf = NULL;
 <STRING>\\.		{ lex_panic("invalid escape: %s\n", yytext); }
 <STRING>\n		{ lex_panic("newline in string\n"); }
 
+<INITIAL>{print}	{ return PRINT; }
+<INITIAL>{var}		{ return VAR; }
+<INITIAL>"="		{ return EQUALS; }
 
 <INITIAL>{hex}		{ yylval.number = strtol(yytext + 2, NULL, 16); return NUM; }
 <INITIAL>{dec}		{ yylval.number = strtol(yytext, NULL, 10); return NUM; }
 <INITIAL>{oct}		{ yylval.number = strtol(yytext + 1, NULL, 8); return NUM; }
 <INITIAL>{bin}		{ yylval.number = strtol(yytext + 2, NULL, 2); return NUM; }
 <INITIAL>{char}		{ yylval.ch = yytext[1]; return CHAR; }
+<INITIAL>{id}		{ yylval.id = strdup(yytext); return ID; }
 <INITIAL>{whitespace}+	{ }
 
 <INITIAL>.		{ lex_panic("unknown token: %s\n", yytext); }

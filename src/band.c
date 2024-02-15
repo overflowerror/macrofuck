@@ -79,13 +79,16 @@ region_t* band_allocate_region(band_t* band, size_t size) {
 	return region;
 }
 
-region_t* band_allocate_var(band_t* band, size_t size, const char* variable) {
-	region_t* region = band_allocate_region(band, size);
-
+void band_make_var(band_t* band, region_t* region, const char* variable) {
 	region->variable = variable;
 	region->is_temp = false;
-
+	
 	dict_put(band->variables, variable, region);
+}
+
+region_t* band_allocate_var(band_t* band, size_t size, const char* variable) {
+	region_t* region = band_allocate_region(band, size);
+	band_make_var(band, region, variable);
 
 	return region;
 }

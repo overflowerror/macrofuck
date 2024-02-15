@@ -31,6 +31,7 @@ region_t* band_region_for_var(band_t*, const char*);
 
 region_t* band_allocate_var(band_t*, size_t, const char*);
 region_t* band_allocate_tmp(band_t*, size_t);
+void band_make_var(band_t*, region_t*, const char*);
 
 void band_region_free(band_t*, region_t*);
 void band_region_free_raw(band_t*, band_addr_t);

@@ -22,16 +22,20 @@ extern struct program* program;
 	long long number;
 	char ch;
 	char* str;
+	char* id;
 }
 
 %type <program> stats
-%type <statement> stat print
+%type <statement> stat print definition
 %type <expr> expr literal
 
 %token <number> NUM 
 %token <ch> CHAR
 %token <str> STR
+%token <id> ID
 %token SEMICOLON
+%token VAR
+%token EQUALS
 %token PRINT
 
 %start file
@@ -55,12 +59,19 @@ stats:    /* empty */
 		}
 ;
 
-stat: print
+stat:	  print
+	| definition
 ;
 
 print: PRINT expr
 		{
 			$$ = print_statement_new($2);
+		}
+;
+
+definition: VAR ID EQUALS expr
+		{
+			$$ = declaration_statement_new($2, $4);
 		}
 ;
 
