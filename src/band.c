@@ -36,7 +36,7 @@ band_addr_t band_find_gap(band_t* band, size_t size) {
 		if (band->band[i] == NULL) {
 			current++;
 			if (current >= size) {
-				return i - current;
+				return i + 1 - current;
 			}
 		} else {
 			current = 0;
@@ -46,6 +46,7 @@ band_addr_t band_find_gap(band_t* band, size_t size) {
 	size_t missing_size = size - current;
 
 	band->band = list_ensure_space(band->band, sizeof(region_t*), missing_size);
+	list_header(band->band)->length += missing_size;
 	
 	return band_size - current;
 }
