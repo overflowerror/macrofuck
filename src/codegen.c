@@ -7,14 +7,24 @@
 #include "band.h"
 #include "error.h"
 
+#define next() fprintf(out, ">")
+#define prev() fprintf(out, "<")
+#define inc() fprintf(out, "+")
+#define dec() fprintf(out, "-")
+#define loop(b) fprintf(out, "["); b; fprintf(out, "]");
+#define reset() fprintf(out, "[-]")
+#define output() fprintf(out, ".")
+#define input() fprintf(out, ",")
 
-static void move_to(FILE* out, band_t* band, size_t target) {
+#define move_to(t) _move_to(out, band, t)
+
+static void _move_to(FILE* out, band_t* band, size_t target) {
 	while (target > band->position) {
-		fprintf(out, ">");
+		next();
 		band->position++;	
 	}
 	while (target < band->position) {
-		fprintf(out, "<");
+		prev();
 		band->position--;
 	}
 }
@@ -32,8 +42,8 @@ static inline void print_repeat(FILE* out, size_t n, char* s) {
 }
 
 static void reset_position(FILE* out, band_t* band, band_addr_t position) {
-	move_to(out, band, position);
-	fprintf(out, "[-]");
+	move_to(position);
+	reset();
 }
 
 static void reset_region(FILE* out, band_t* band, region_t* region) {
@@ -43,8 +53,8 @@ static void reset_region(FILE* out, band_t* band, region_t* region) {
 }
 
 void codegen_add_char(FILE* out, band_t* band, size_t position, char c) {
-	move_to(out, band, position);
-	fprintf(out, "[-]");
+	move_to(position);
+	reset();
 	print_repeat(out, c, "+");
 }
 
@@ -83,10 +93,8 @@ region_t* codegen_expr(FILE* out, band_t* band, struct expression* expr) {
 	switch(expr->kind) {
 		case LITERAL:
 			return codegen_literal_expr(out, band, expr->literal);
-			break;
 		case VARIABLE:
 			return codegen_variable_expr(out, band, expr->variable);
-			break;
 		default:
 			fprintf(stderr, "expression kind: %d\n", expr->kind);
 			panic("unknown expression kind");
@@ -96,11 +104,12 @@ region_t* codegen_expr(FILE* out, band_t* band, struct expression* expr) {
 
 void codegen_print_statement(FILE* out, band_t* band, struct print_statement statement) {
 	region_t* region = codegen_expr(out, band, statement.value);
-	move_to(out, band, region->start);
+	move_to(region->start);
 
-	fprintf(out, ".");
+	output();
 	for (size_t i = 1; i < region->size; i++) {
-		fprintf(out, ">.");
+		next();
+        output();
 	}
 	band->position += region->size - 1;
 
@@ -115,23 +124,23 @@ region_t* clone_region(FILE* out, band_t* band, region_t* original) {
 	for (size_t i = 0; i < original->size; i++) {
 		reset_position(out, band, clone->start + i);
 
-		move_to(out, band, original->start + i);
-		fprintf(out, "[");
-		fprintf(out, "-");
-		move_to(out, band, tmp->start);
-		fprintf(out, "+");
-		move_to(out, band, clone->start + i);
-		fprintf(out, "+");
-		move_to(out, band, original->start + i);
-		fprintf(out, "]");
+		move_to(original->start + i);
+        loop({
+             dec();
+             move_to(tmp->start);
+             inc();
+             move_to(clone->start + i);
+             inc();
+             move_to(original->start + i);
+        });
 
-		move_to(out, band, tmp->start);
-		fprintf(out, "[");
-		fprintf(out, "-");
-		move_to(out, band, original->start + i);
-		fprintf(out, "+");
-		move_to(out, band, tmp->start);
-		fprintf(out, "]");
+        move_to(tmp->start);
+        loop({
+             dec();
+             move_to(original->start + i);
+             inc();
+             move_to(tmp->start);
+        });
 	}
 
 	band_region_free(band, tmp);
