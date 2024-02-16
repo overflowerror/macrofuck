@@ -27,7 +27,7 @@ static void region_used(band_t* band, region_t* region) {
 }
 
 static void reset_position(FILE* out, band_t* band, band_addr_t position) {
-	move_to(position);
+	move(position);
 	reset();
 }
 
@@ -38,7 +38,7 @@ static void reset_region(FILE* out, band_t* band, region_t* region) {
 }
 
 void codegen_add_char(FILE* out, band_t* band, size_t position, char c) {
-	move_to(position);
+	move(position);
 	reset();
 	add(c);
 }
@@ -52,7 +52,7 @@ region_t* codegen_literal_expr(FILE* out, band_t* band, struct literal_expressio
                 panic("number literal too big");
             }
             region = band_allocate_tmp(band, 1);
-            move_to(region->start);
+            move_to(region);
             reset(); add(expr.number);
             break;
 		case CHAR_LITERAL:
@@ -105,7 +105,7 @@ region_t* codegen_expr(FILE* out, band_t* band, struct expression* expr) {
 
 void codegen_print_statement(FILE* out, band_t* band, struct print_statement statement) {
 	region_t* region = codegen_expr(out, band, statement.value);
-	move_to(region->start);
+	move_to(region);
 
 	output();
 	for (size_t i = 1; i < region->size; i++) {
@@ -125,22 +125,22 @@ region_t* clone_region(FILE* out, band_t* band, region_t* original) {
 	for (size_t i = 0; i < original->size; i++) {
 		reset_position(out, band, clone->start + i);
 
-		move_to(original->start + i);
+		move_offset(original, i);
         loop({
              dec();
-             move_to(tmp->start);
+             move_to(tmp);
              inc();
-             move_to(clone->start + i);
+             move_offset(clone, i);
              inc();
-             move_to(original->start + i);
+             move_offset(original, i);
         });
 
-        move_to(tmp->start);
+        move_to(tmp);
         loop({
              dec();
-             move_to(original->start + i);
+             move_offset(original, i);
              inc();
-             move_to(tmp->start);
+             move_to(tmp);
         });
 	}
 
