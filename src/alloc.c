@@ -6,7 +6,8 @@
 void* safe_malloc(size_t length) {
 	void* result = malloc(length);
 	if (!result) {
-		panic("safe_malloc");
+        fprintf(stderr, "error while trying to allocate %zu bytes\n", length);
+		panic("malloc");
 	}
 	return result;
 }
@@ -14,7 +15,8 @@ void* safe_malloc(size_t length) {
 void* safe_realloc(void* ptr, size_t length) {
 	void* new = realloc(ptr, length);
 	if (!new) {
-		panic("safe_realloc");
+        fprintf(stderr, "error while trying to allocate %zu bytes\n", length);
+		panic("realloc");
 	}
 	return new;
 }

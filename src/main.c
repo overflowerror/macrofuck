@@ -13,6 +13,8 @@ extern FILE* yyin;
 extern int yyparse(void);
 extern int yydebug;
 
+#define DEBUG_MODE (0)
+
 struct program* program;
 
 void help(void) {
@@ -20,7 +22,7 @@ void help(void) {
 }
 
 int main(int argc, char** argv) {
-    //yydebug = 1;
+    if (DEBUG_MODE) yydebug = 1;
 
 	FILE* input;
 	FILE* output = NULL;
@@ -63,14 +65,19 @@ int main(int argc, char** argv) {
 		}
 	}
 
+    if (DEBUG_MODE) fprintf(stderr, INFO("parsing\n"));
+
 	yyin = input;
 	int result = yyparse();
 	if (result != 0) {
 		return result;
 	}
 
+
+    if (DEBUG_MODE) fprintf(stderr, INFO("loading modules\n"));
     load_plugins();
 
+    if (DEBUG_MODE) fprintf(stderr, INFO("generating code\n"));
 	result = codegen(output, program);
 	if (result != 0) {
 		return result;
