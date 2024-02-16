@@ -183,12 +183,34 @@ void codegen_statement(FILE* out, band_t* band, struct statement* statement) {
 	fprintf(out, "\n");
 }
 
+void check_allocations(band_t* band) {
+    size_t number_of_allocated_regions = band_number_of_regions(band);
+
+    if (number_of_allocated_regions > 0) {
+        fprintf(stderr, WARN("code generation existed with allocated regions:\n"));
+
+        region_t** region_ptr = NULL;
+        while((region_ptr = band_iterate(band, region_ptr)) != NULL) {
+            region_t* region = *region_ptr;
+
+            fprintf(stderr, "- (%zu) ", region->size);
+            if (region->is_temp) {
+                fprintf(stderr, "[anonymous] (this is a bug in the compiler!)\n");
+            } else {
+                fprintf(stderr, "variable %s\n", region->variable);
+            }
+        }
+    }
+}
+
 int codegen(FILE* out, struct program* program) {
 	band_t* band = band_init();
 	
 	for (size_t i = 0; i < program->length; i++) {
 		codegen_statement(out, band, program->statements[i]);
 	}
+
+    check_allocations(band);
 
 	return 0;
 }

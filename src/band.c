@@ -59,7 +59,7 @@ size_t band_find_empty_region_index(band_t* band) {
 		}
 	}
 
-	band->regions = list_ensure_space(band->regions, sizeof(region_t*), 1);
+	list_add(band->regions, NULL);
 	return regions_size;
 }
 
@@ -118,4 +118,33 @@ void band_region_free(band_t* band, region_t* region) {
 
 void band_region_free_raw(band_t* band, band_addr_t addr) {
 	band_region_free(band, band->band[addr]);
+}
+
+size_t band_number_of_regions(band_t* band) {
+    size_t regions_size = list_size(band->regions);
+
+    size_t result = 0;
+    for (size_t i = 0; i < regions_size; i++) {
+        if (band->regions[i] != NULL) {
+            result++;
+        }
+    }
+    return result;
+}
+
+region_t** band_iterate(band_t* band, region_t** last_ptr) {
+    size_t size = list_size(band->regions);
+
+    size_t offset = 0;
+    if (last_ptr) {
+        offset = (((uintptr_t) last_ptr) - ((uintptr_t) band->regions)) / sizeof(void *) + 1;
+    }
+
+    for (size_t i = offset; i < size; i++) {
+        if (band->regions[i] != NULL) {
+            return band->regions + i;
+        }
+    }
+
+    return NULL;
 }

@@ -36,5 +36,7 @@ void band_make_var(band_t*, region_t*, const char*);
 void band_region_free(band_t*, region_t*);
 void band_region_free_raw(band_t*, band_addr_t);
 
+size_t band_number_of_regions(band_t*);
+region_t** band_iterate(band_t*, region_t**);
 
 #endif
