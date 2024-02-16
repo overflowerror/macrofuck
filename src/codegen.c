@@ -203,8 +203,56 @@ region_t* codegen_multiplication(FILE* out, band_t* band, region_t* op1, region_
     calc_postfix();
 }
 region_t* codegen_division(FILE* out, band_t* band, region_t* op1, region_t* op2) {
-    panic("not yet implemented");
-    return NULL;
+    if (!op1->is_temp) {
+        op1 = clone(op1);
+    }
+    if (!op2->is_temp) {
+        op2 = clone(op2);
+    }
+
+    region_t* result = band_allocate_tmp(band, 1);
+    move_to(result); reset();
+
+    region_t* tmp = band_allocate_tmp(band, 1);
+    move_to(tmp); reset();
+    copy(op2, tmp);
+
+    region_t* tmp2 = band_allocate_tmp(band, 1);
+
+    region_t* flag = band_allocate_tmp(band, 1);
+
+    move_to(op1);
+    loop({
+        dec();
+
+        move_to(tmp); dec();
+
+        move_to(flag); reset(); inc();
+
+        move_to(tmp2); reset();
+        copy(tmp, tmp2);
+        move_to(tmp2);
+        loop({
+            move_to(flag); reset();
+            move_to(tmp2); reset();
+        });
+
+        move_to(flag);
+        loop({
+            move_to(result); inc();
+            copy(op2, tmp);
+            move_to(flag); reset();
+        });
+
+        move_to(op1);
+    });
+
+    band_region_free(band, flag);
+    band_region_free(band, tmp2);
+    band_region_free(band, tmp);
+    band_region_free(band, op1);
+    band_region_free(band, op2);
+    return result;
 }
 region_t* codegen_modulo(FILE* out, band_t* band, region_t* op1, region_t* op2) {
     panic("not yet implemented");
