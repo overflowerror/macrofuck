@@ -64,7 +64,14 @@ strbuf_t strbuf = NULL;
 
 <INITIAL>{print}	{ return PRINT; }
 <INITIAL>{var}		{ return VAR; }
-<INITIAL>"="		{ return EQUALS; }
+<INITIAL>"="		{ return ASSIGNMENT; }
+<INITIAL>"+"		{ return PLUS; }
+<INITIAL>"-"		{ return MINUS; }
+<INITIAL>"*"		{ return TIMES; }
+<INITIAL>"/"		{ return DIVIDE; }
+<INITIAL>"%"		{ return MOD; }
+<INITIAL>"("        { return OPENING_BRACKETS; }
+<INITIAL>")"        { return CLOSING_BRACKETS; }
 
 <INITIAL>"!("       { BEGIN MACRO; strbuf_clear(strbuf); }
 <MACRO>[^\\)]*     { strbuf_append(strbuf, yytext); }

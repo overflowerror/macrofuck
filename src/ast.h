@@ -13,6 +13,7 @@ enum expression_kind {
 	LITERAL,
 	VARIABLE,
     MACRO,
+    CALCULATION,
 };
 
 enum expression_type {
@@ -46,6 +47,20 @@ struct macro_expression {
     char* argument;
 };
 
+enum calc_operator {
+    ADDITION,
+    SUBTRACTION,
+    MULTIPLICATION,
+    DIVISION,
+    MODULO,
+};
+
+struct calc_expression {
+    struct expression* operand1;
+    struct expression* operand2;
+    enum calc_operator operator;
+};
+
 struct expression {
 	enum expression_kind kind;
 	enum expression_type type;
@@ -53,6 +68,7 @@ struct expression {
 		struct literal_expression literal;
 		struct variable_expression variable;
         struct macro_expression macro;
+        struct calc_expression calc;
 	};
 };
 
@@ -95,5 +111,6 @@ struct expression* literal_expression_str_new(char*);
 struct expression* literal_expression_num_new(long long);
 struct expression* variable_expression_new(char*);
 struct expression* macro_expression_new(char*, char*);
+struct expression* calc_expression_new(struct expression*, struct expression*, enum calc_operator);
 
 #endif 

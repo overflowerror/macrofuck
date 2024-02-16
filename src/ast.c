@@ -107,3 +107,15 @@ struct expression* macro_expression_new(char* id, char* arg) {
     };
     return expr;
 }
+
+struct expression* calc_expression_new(struct expression* operand1, struct expression* operand2, enum calc_operator operator) {
+    _new(expr, expression);
+    expr->kind = CALCULATION;
+    expr->type = UNKNOWN_TYPE;
+    expr->calc = (struct calc_expression) {
+            .operand1 = operand1,
+            .operand2 = operand2,
+            .operator = operator,
+    };
+    return expr;
+}

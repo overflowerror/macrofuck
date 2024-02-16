@@ -24,6 +24,7 @@ extern struct program* program;
 	struct program* program;
 	struct statement* statement;
 	struct expression* expr;
+	int op; // hack, but C doesn't let me use forward declarations of enums
 	long long number;
 	char ch;
 	char* str;
@@ -32,7 +33,8 @@ extern struct program* program;
 
 %type <program> stats
 %type <statement> stat print definition macrostat
-%type <expr> expr literal variable macroexpr
+%type <expr> expr literal variable macroexpr calcexpr
+%type <op> op
 
 %token <number> NUM 
 %token <ch> CHAR
@@ -41,7 +43,15 @@ extern struct program* program;
 %token <str> MACRO_CONTENT
 
 %token SEMICOLON
-%token EQUALS
+%token ASSIGNMENT
+%token PLUS
+%token MINUS
+%token TIMES
+%token DIVIDE
+%token MOD
+
+%token OPENING_BRACKETS
+%token CLOSING_BRACKETS
 
 %token VAR
 %token PRINT
@@ -78,7 +88,7 @@ print: PRINT expr
 		}
 ;
 
-definition: VAR ID EQUALS expr
+definition: VAR ID ASSIGNMENT expr
 		{
 			$$ = declaration_statement_new($2, $4);
 		}
@@ -93,6 +103,39 @@ macrostat: macroexpr
 expr: 	  literal
 	| variable
 	| macroexpr
+	| OPENING_BRACKETS expr CLOSING_BRACKETS
+	    {
+	        $$ = $2;
+	    }
+	| calcexpr
+;
+
+calcexpr: OPENING_BRACKETS expr op expr CLOSING_BRACKETS
+        {
+            $$ = calc_expression_new($2, $4, $3);
+        }
+;
+
+op: PLUS
+        {
+            return ADDITION;
+        }
+    | MINUS
+        {
+            return SUBTRACTION;
+        }
+    | TIMES
+        {
+            return MULTIPLICATION;
+        }
+    | DIVIDE
+        {
+            return DIVISION;
+        }
+    | MOD
+        {
+            return MODULO;
+        }
 ;
 
 literal:  NUM
