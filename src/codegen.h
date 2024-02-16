@@ -17,8 +17,8 @@
 #define move_to(r) move(r->start)
 #define move_offset(r, o) move(r->start + o)
 
-#define add(v) { for (int i = 0; i < v; i++) inc(); }
-#define sub(v) { for (int i = 0; i < v; i++) dec(); }
+#define add(v) { for (int _i = 0; _i < v; _i++) inc(); }
+#define sub(v) { for (int _i = 0; _i < v; _i++) dec(); }
 
 void _move_to(FILE*, band_t*, size_t);
 
