@@ -52,9 +52,13 @@ extern struct program* program;
 
 %token OPENING_BRACKETS
 %token CLOSING_BRACKETS
+%token OPENING_BRACES
+%token CLOSING_BRACES
 
 %token VAR
 %token PRINT
+%token IF
+%token ELSE
 
 %start file
 
@@ -77,8 +81,9 @@ stats:    /* empty */
 		}
 ;
 
-stat:	  print
+stat: print
 	| definition
+	| if
 	| macrostat
 ;
 
@@ -92,6 +97,16 @@ definition: VAR ID ASSIGNMENT expr
 		{
 			$$ = declaration_statement_new($2, $4);
 		}
+;
+
+if: IF expr block optelse
+;
+
+optelse: /* empty */
+    | ELSE block
+;
+
+block: OPENING_BRACES stats CLOSING_BRACES
 ;
 
 macrostat: macroexpr

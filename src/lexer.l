@@ -5,8 +5,10 @@ oct		"0"[0-9]+
 hex		"0x"[0-9a-fA-F]+
 bin		"0b"[01]+
 
-print		"print"
+print	"print"
 var		"var"
+if      "if"
+else    "else"
 
 char		"'"."'"
 id		[a-zA-Z_][a-zA-Z0-9_]*
@@ -64,6 +66,9 @@ strbuf_t strbuf = NULL;
 
 <INITIAL>{print}	{ return PRINT; }
 <INITIAL>{var}		{ return VAR; }
+<INITIAL>{if}       { return IF; }
+<INITIAL>{else}     { return ELSE; }
+
 <INITIAL>"="		{ return ASSIGNMENT; }
 <INITIAL>"+"		{ return PLUS; }
 <INITIAL>"-"		{ return MINUS; }
@@ -72,6 +77,8 @@ strbuf_t strbuf = NULL;
 <INITIAL>"%"		{ return MOD; }
 <INITIAL>"("        { return OPENING_BRACKETS; }
 <INITIAL>")"        { return CLOSING_BRACKETS; }
+<INITIAL>"{"        { return OPENING_BRACES; }
+<INITIAL>"}"        { return CLOSING_BRACES; }
 
 <INITIAL>"!("       { BEGIN MACRO; strbuf_clear(strbuf); }
 <MACRO>[^\\)]*     { strbuf_append(strbuf, yytext); }
