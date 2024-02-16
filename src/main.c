@@ -11,6 +11,7 @@
 
 extern FILE* yyin;
 extern int yyparse(void);
+extern int yydebug;
 
 struct program* program;
 
@@ -19,6 +20,8 @@ void help(void) {
 }
 
 int main(int argc, char** argv) {
+    //yydebug = 1;
+
 	FILE* input;
 	FILE* output = NULL;
 

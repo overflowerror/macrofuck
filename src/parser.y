@@ -1,5 +1,7 @@
 %{
 
+#define YYDEBUG 1
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -15,6 +17,8 @@ void yyerror(const char*);
 extern struct program* program;
 
 %}
+
+%verbose
 
 %union {
 	struct program* program;
@@ -34,10 +38,10 @@ extern struct program* program;
 %token <ch> CHAR
 %token <str> STR
 %token <id> ID
+%token <str> MACRO_CONTENT
 
 %token SEMICOLON
 %token EQUALS
-%token MACRO_CONTENT
 
 %token VAR
 %token PRINT
@@ -82,18 +86,18 @@ definition: VAR ID EQUALS expr
 
 macrostat: macroexpr
         {
-            $$ = NULL;
+            $$ = macro_statement_new($1);
         }
 ;
 
 expr: 	  literal
 	| variable
+	| macroexpr
 ;
 
 literal:  NUM
 		{
-			yyerror(ERROR("number literals not yet supported"));
-			YYERROR;
+			$$ = literal_expression_num_new($1);
 		}
 	| CHAR
 		{
@@ -112,7 +116,7 @@ variable: ID
 
 macroexpr: ID MACRO_CONTENT
         {
-            $$ = NULL;
+            $$ = macro_expression_new($1, $2);
         }
 ;
 

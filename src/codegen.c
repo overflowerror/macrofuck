@@ -6,6 +6,7 @@
 #include "ast.h"
 #include "band.h"
 #include "error.h"
+#include "plugins.h"
 
 
 void _move_to(FILE* out, band_t* band, size_t target) {
@@ -83,8 +84,8 @@ region_t* codegen_variable_expr(FILE* _, band_t* band, struct variable_expressio
 }
 
 region_t* codegen_macro_expr(FILE* out, band_t* band, struct macro_expression expr) {
-    // TODO
-    return band_allocate_tmp(band, 1);
+    macro_t macro = find_macro(expr.id);
+    return macro(out, band, expr.argument);
 }
 
 region_t* codegen_expr(FILE* out, band_t* band, struct expression* expr) {

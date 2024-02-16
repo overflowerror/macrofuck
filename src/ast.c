@@ -45,7 +45,7 @@ struct statement* declaration_statement_new(char* id, struct expression* expr) {
 	return stat;
 }
 
-struct statement* macro_expression(struct expression* expr) {
+struct statement* macro_statement_new(struct expression* expr) {
     _new(stat, statement);
     stat->kind = MACRO_STATEMENT;
     stat->macro = (struct macro_statement) {
@@ -63,6 +63,17 @@ struct expression* literal_expression_char_new(char c) {
 		.ch = c,
 	};
 	return expr;
+}
+
+struct expression* literal_expression_num_new(long long i) {
+    _new(expr, expression);
+    expr->kind = LITERAL;
+    expr->type = INTEGER;
+    expr->literal = (struct literal_expression) {
+            .kind = NUMBER_LITERAL,
+            .number = i,
+    };
+    return expr;
 }
 
 struct expression* literal_expression_str_new(char* s) {

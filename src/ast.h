@@ -88,7 +88,7 @@ void program_add_statement(struct program*, struct statement*);
 
 struct statement* print_statement_new(struct expression*);
 struct statement* declaration_statement_new(char*, struct expression*);
-struct statement* macro_expression(struct expression*);
+struct statement* macro_statement_new(struct expression*);
 
 struct expression* literal_expression_char_new(char);
 struct expression* literal_expression_str_new(char*);

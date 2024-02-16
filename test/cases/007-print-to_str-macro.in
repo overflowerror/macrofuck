@@ -1,0 +1,3 @@
+var tmp = 128;
+print to_str!(tmp);
+print "\n";
