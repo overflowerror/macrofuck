@@ -255,8 +255,69 @@ region_t* codegen_division(FILE* out, band_t* band, region_t* op1, region_t* op2
     return result;
 }
 region_t* codegen_modulo(FILE* out, band_t* band, region_t* op1, region_t* op2) {
-    panic("not yet implemented");
-    return NULL;
+    if (!op1->is_temp) {
+        op1 = clone(op1);
+    }
+    if (!op2->is_temp) {
+        op2 = clone(op2);
+    }
+
+    region_t* tmp = band_allocate_tmp(band, 1);
+    move_to(tmp); reset();
+    copy(op2, tmp);
+
+    region_t* tmp2 = band_allocate_tmp(band, 1);
+
+    region_t* flag = band_allocate_tmp(band, 1);
+
+    move_to(op1);
+    loop({
+        dec();
+
+        move_to(tmp); dec();
+
+        move_to(flag); reset(); inc();
+
+        move_to(tmp2); reset();
+        copy(tmp, tmp2);
+        move_to(tmp2);
+        loop({
+            move_to(flag); reset();
+            move_to(tmp2); reset();
+        });
+
+        move_to(flag);
+        loop({
+            copy(op2, tmp);
+            move_to(flag); reset();
+        });
+
+        move_to(op1);
+    });
+
+    move_to(tmp);
+    loop({
+        loop({
+            dec();
+            move_to(op2); dec();
+            move_to(tmp);
+        });
+
+        move_to(op2);
+        loop({
+            dec();
+            move_to(op1); inc();
+            move_to(op2);
+        });
+
+        move_to(tmp);
+    });
+
+    band_region_free(band, flag);
+    band_region_free(band, tmp2);
+    band_region_free(band, tmp);
+    band_region_free(band, op2);
+    return op1;
 }
 
 region_t* codegen_calc_expr(FILE* out, band_t* band, struct calc_expression expr) {
