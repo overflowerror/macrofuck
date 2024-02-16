@@ -7,20 +7,8 @@
 #include "band.h"
 #include "error.h"
 
-#define next() fprintf(out, ">")
-#define prev() fprintf(out, "<")
-#define inc() fprintf(out, "+")
-#define dec() fprintf(out, "-")
-#define loop(b) fprintf(out, "["); b; fprintf(out, "]");
-#define reset() fprintf(out, "[-]")
-#define output() fprintf(out, ".")
-#define input() fprintf(out, ",")
 
-#define move_to(t) _move_to(out, band, t)
-
-#define set(v) { for (int i = 0; i < v; i++) inc(); }
-
-static void _move_to(FILE* out, band_t* band, size_t target) {
+void _move_to(FILE* out, band_t* band, size_t target) {
 	while (target > band->position) {
 		next();
 		band->position++;	
@@ -51,7 +39,7 @@ static void reset_region(FILE* out, band_t* band, region_t* region) {
 void codegen_add_char(FILE* out, band_t* band, size_t position, char c) {
 	move_to(position);
 	reset();
-	set(c);
+	add(c);
 }
 
 region_t* codegen_literal_expr(FILE* out, band_t* band, struct literal_expression expr) {
