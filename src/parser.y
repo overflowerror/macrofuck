@@ -118,23 +118,23 @@ calcexpr: OPENING_BRACKETS expr op expr CLOSING_BRACKETS
 
 op: PLUS
         {
-            return ADDITION;
+            $$ = ADDITION;
         }
     | MINUS
         {
-            return SUBTRACTION;
+            $$ = SUBTRACTION;
         }
     | TIMES
         {
-            return MULTIPLICATION;
+            $$ = MULTIPLICATION;
         }
     | DIVIDE
         {
-            return DIVISION;
+            $$ = DIVISION;
         }
     | MOD
         {
-            return MODULO;
+            $$ = MODULO;
         }
 ;
 

@@ -20,6 +20,44 @@ void _move_to(FILE* out, band_t* band, size_t target) {
 	}
 }
 
+void _copy(FILE* out, band_t* band, region_t* source, region_t* target) {
+    size_t size = source->size;
+    if (target->size < size) {
+        size = target->size;
+    }
+
+    region_t* tmp = band_allocate_tmp(band, size);
+    move_to(tmp); reset();
+
+    for (size_t i = 0; i < size; i++) {
+        move_offset(source, i);
+        loop({
+            dec();
+            move_offset(target, i); inc();
+            move_offset(tmp, i); inc();
+            move_offset(source, i);
+        });
+    }
+
+    for (size_t i = 0; i < size; i++) {
+        move_offset(tmp, i);
+        loop({
+            dec();
+            move_offset(source, i); inc();
+            move_offset(tmp, i);
+        });
+    }
+
+    band_region_free(band, tmp);
+}
+
+region_t* _clone(FILE* out, band_t* band, region_t* region) {
+    region_t* clone = band_allocate_tmp(band, region->size);
+    copy(region, clone);
+    return clone;
+}
+
+
 static void region_used(band_t* band, region_t* region) {
 	if (region->is_temp) {
 		band_region_free(band, region);
@@ -88,6 +126,121 @@ region_t* codegen_macro_expr(FILE* out, band_t* band, struct macro_expression ex
     return macro(out, band, expr.argument);
 }
 
+region_t* codegen_expr(FILE*, band_t*, struct expression*);
+
+#define swap_or_clone(result, op1, op2, allow_swap) \
+    if (op1->is_temp) { \
+        result = op1; \
+    } else if (op2->is_temp && allow_swap) { \
+        result = op2; \
+        op2 = op1; \
+    } else { \
+        result = clone(op1); \
+    }
+
+#define calc_prefix(allow_swap) \
+    region_t* result; \
+    swap_or_clone(result, op1, op2, allow_swap); \
+    if (!op2->is_temp) { \
+        op2 = clone(op2); \
+    }
+
+#define calc_postfix() \
+    band_region_free(band, op2); \
+    return result;
+
+region_t* codegen_addition(FILE* out, band_t* band, region_t* op1, region_t* op2) {
+    calc_prefix(true);
+
+    move_to(op2);
+    loop({
+        dec();
+        move_to(result); inc();
+        move_to(op2);
+    });
+
+    calc_postfix();
+}
+region_t* codegen_subtraction(FILE* out, band_t* band, region_t* op1, region_t* op2) {
+    calc_prefix(false);
+
+    move_to(op2);
+    loop({
+        dec();
+        move_to(result); dec();
+        move_to(op2);
+    });
+
+    calc_postfix();
+}
+region_t* codegen_multiplication(FILE* out, band_t* band, region_t* op1, region_t* op2) {
+    calc_prefix(true);
+
+    // make sure to not change op1
+    op1 = clone(op1);
+    region_t* tmp = clone(op1);
+
+    move_to(result); reset();
+
+    move_to(op2);
+    loop({
+        dec();
+
+        move_to(tmp);
+        loop({
+            dec();
+            move_to(result); inc();
+            move_to(tmp);
+        });
+        copy(op1, tmp);
+
+        move_to(op2);
+    });
+
+    band_region_free(band, tmp);
+    band_region_free(band, op1);
+
+    calc_postfix();
+}
+region_t* codegen_division(FILE* out, band_t* band, region_t* op1, region_t* op2) {
+    panic("not yet implemented");
+    return NULL;
+}
+region_t* codegen_modulo(FILE* out, band_t* band, region_t* op1, region_t* op2) {
+    panic("not yet implemented");
+    return NULL;
+}
+
+region_t* codegen_calc_expr(FILE* out, band_t* band, struct calc_expression expr) {
+    region_t* operand1 = codegen_expr(out, band, expr.operand1);
+    region_t* operand2 = codegen_expr(out, band, expr.operand2);
+
+    region_t* result;
+
+    switch (expr.operator) {
+        case ADDITION:
+            result = codegen_addition(out, band, operand1, operand2);
+            break;
+        case SUBTRACTION:
+            result = codegen_subtraction(out, band, operand1, operand2);
+            break;
+        case MULTIPLICATION:
+            result = codegen_multiplication(out, band, operand1, operand2);
+            break;
+        case DIVISION:
+            result = codegen_division(out, band, operand1, operand2);
+            break;
+        case MODULO:
+            result = codegen_modulo(out, band, operand1, operand2);
+            break;
+        default:
+            fprintf(stderr, "unknown operator: %d\n", expr.operator);
+            panic("unknown operator");
+    }
+
+    return result;
+}
+
 region_t* codegen_expr(FILE* out, band_t* band, struct expression* expr) {
 	switch(expr->kind) {
 		case LITERAL:
@@ -96,6 +249,8 @@ region_t* codegen_expr(FILE* out, band_t* band, struct expression* expr) {
 			return codegen_variable_expr(out, band, expr->variable);
         case MACRO:
             return codegen_macro_expr(out, band, expr->macro);
+        case CALCULATION:
+            return codegen_calc_expr(out, band, expr->calc);
 		default:
 			fprintf(stderr, "expression kind: %d\n", expr->kind);
 			panic("unknown expression kind");
