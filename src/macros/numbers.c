@@ -116,6 +116,7 @@ extern region_t* to_str(FILE* out, band_t* band, const char* _arg) {
     band_region_free(band, tmp2);
     band_region_free(band, tmp);
     band_region_free(band, ten);
+    band_region_free(band, copy);
 
     return str;
 }

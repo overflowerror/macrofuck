@@ -459,7 +459,7 @@ void check_allocations(band_t* band) {
 
             fprintf(stderr, "- (%zu) ", region->size);
             if (region->is_temp) {
-                fprintf(stderr, "[anonymous] (this is a bug in the compiler!)\n");
+                fprintf(stderr, "[anonymous] (this is a bug in the compiler; %zu)\n", region->start);
             } else {
                 fprintf(stderr, "variable %s\n", region->variable);
             }
