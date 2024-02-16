@@ -45,6 +45,15 @@ void codegen_add_char(FILE* out, band_t* band, size_t position, char c) {
 region_t* codegen_literal_expr(FILE* out, band_t* band, struct literal_expression expr) {
 	region_t* region = NULL;
 	switch(expr.kind) {
+        case NUMBER_LITERAL:
+            if (expr.number > 255) {
+                fprintf(stderr, "literal %lld greater than 255\n", expr.number);
+                panic("number literal too big");
+            }
+            region = band_allocate_tmp(band, 1);
+            move_to(region->start);
+            reset(); add(expr.number);
+            break;
 		case CHAR_LITERAL:
 			region = band_allocate_tmp(band, 1);
 			codegen_add_char(out, band, region->start, expr.ch);
