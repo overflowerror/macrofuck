@@ -27,6 +27,7 @@ enum statement_kind {
 	PRINT_STATEMENT,
 	DECL_STATEMENT,
     MACRO_STATEMENT,
+    IF_STATEMENT,
 };
 
 struct literal_expression {
@@ -85,12 +86,19 @@ struct macro_statement {
     struct expression* expr;
 };
 
+struct if_statement {
+    struct expression* condition;
+    struct block* if_block;
+    struct block* else_block;
+};
+
 struct statement {
 	enum statement_kind kind;
 	union {
 		struct print_statement print;
 		struct declaration_statement decl;
         struct macro_statement macro;
+        struct if_statement if_else;
 	};
 };
 
@@ -105,6 +113,7 @@ void block_add_statement(struct block*, struct statement*);
 struct statement* print_statement_new(struct expression*);
 struct statement* declaration_statement_new(char*, struct expression*);
 struct statement* macro_statement_new(struct expression*);
+struct statement* if_statement_new(struct expression*, struct block*, struct block*);
 
 struct expression* literal_expression_char_new(char);
 struct expression* literal_expression_str_new(char*);

@@ -54,6 +54,17 @@ struct statement* macro_statement_new(struct expression* expr) {
     return stat;
 }
 
+struct statement* if_statement_new(struct expression* condition, struct block* if_block, struct block* else_block) {
+    _new(stat, statement);
+    stat->kind = IF_STATEMENT;
+    stat->if_else = (struct if_statement) {
+            .condition = condition,
+            .if_block = if_block,
+            .else_block = else_block,
+    };
+    return stat;
+}
+
 struct expression* literal_expression_char_new(char c) {
 	_new(expr, expression);
 	expr->kind = LITERAL;

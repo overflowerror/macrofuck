@@ -31,8 +31,8 @@ extern struct block* program;
 	char* id;
 }
 
-%type <block> stats
-%type <statement> stat print definition macrostat
+%type <block> stats optelse block
+%type <statement> stat print definition macrostat if
 %type <expr> expr literal variable macroexpr calcexpr
 %type <op> op
 
@@ -100,13 +100,25 @@ definition: VAR ID ASSIGNMENT expr
 ;
 
 if: IF expr block optelse
+        {
+            $$ = if_statement_new($2, $3, $4);
+        }
 ;
 
 optelse: /* empty */
+        {
+            $$ = NULL;
+        }
     | ELSE block
+        {
+            $$ = $2;
+        }
 ;
 
 block: OPENING_BRACES stats CLOSING_BRACES
+        {
+            $$ = $2;
+        }
 ;
 
 macrostat: macroexpr
