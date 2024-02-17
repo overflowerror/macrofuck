@@ -94,13 +94,13 @@ struct statement {
 	};
 };
 
-struct program {
+struct block {
 	size_t length;
 	struct statement** statements;
 };
 
-struct program* program_new(void);
-void program_add_statement(struct program*, struct statement*);
+struct block* block_new(void);
+void block_add_statement(struct block*, struct statement*);
 
 struct statement* print_statement_new(struct expression*);
 struct statement* declaration_statement_new(char*, struct expression*);

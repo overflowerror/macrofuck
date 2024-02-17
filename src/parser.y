@@ -14,14 +14,14 @@
 int yylex(void);
 void yyerror(const char*);
 
-extern struct program* program;
+extern struct block* program;
 
 %}
 
 %verbose
 
 %union {
-	struct program* program;
+	struct block* block;
 	struct statement* statement;
 	struct expression* expr;
 	int op; // hack, but C doesn't let me use forward declarations of enums
@@ -31,7 +31,7 @@ extern struct program* program;
 	char* id;
 }
 
-%type <program> stats
+%type <block> stats
 %type <statement> stat print definition macrostat
 %type <expr> expr literal variable macroexpr calcexpr
 %type <op> op
@@ -72,12 +72,12 @@ file: stats
 
 stats:    /* empty */
 		{
-			$$ = program_new();
+			$$ = block_new();
 		}
 	| stats stat SEMICOLON
 		{
 			$$ = $1;
-			program_add_statement($$, $2);
+			block_add_statement($$, $2);
 		}
 ;
 

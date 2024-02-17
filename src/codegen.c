@@ -467,7 +467,7 @@ void check_allocations(band_t* band) {
     }
 }
 
-int codegen(FILE* out, struct program* program) {
+int codegen(FILE* out, struct block* program) {
 	band_t* band = band_init();
 	
 	for (size_t i = 0; i < program->length; i++) {

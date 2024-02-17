@@ -13,17 +13,17 @@
 #define last(stru, field) stru->field[stru->length - 1]
 
 
-struct program* program_new(void) {
-	_new(program, program);
-	program->length = 0;
-	program->statements = NULL;
-	return program;
+struct block* block_new(void) {
+	_new(block, block);
+    block->length = 0;
+    block->statements = NULL;
+	return block;
 }
 
-void program_add_statement(struct program* program, struct statement* statement) {
-	program->length++;
-	adjust_array(program, statements, struct statement*);
-	last(program, statements) = statement;
+void block_add_statement(struct block* block, struct statement* statement) {
+	block->length++;
+	adjust_array(block, statements, struct statement*);
+	last(block, statements) = statement;
 }
 
 struct statement* print_statement_new(struct expression* expr) {	

@@ -15,7 +15,7 @@ extern int yydebug;
 
 #define DEBUG_MODE (0)
 
-struct program* program;
+struct block* program;
 
 void help(void) {
 	printf("// TODO\n");

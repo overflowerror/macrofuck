@@ -27,6 +27,6 @@ void _move_to(FILE*, band_t*, size_t);
 void _copy(FILE*, band_t*, region_t*, region_t*);
 region_t* _clone(FILE*, band_t*, region_t*);
 
-int codegen(FILE*, struct program*);
+int codegen(FILE*, struct block*);
 
 #endif
