@@ -429,6 +429,45 @@ void codegen_macro_statement(FILE* out, band_t* band, struct macro_statement sta
     }
 }
 
+void codegen_block(FILE*, band_t*, struct block*);
+
+void codegen_if_statement(FILE* out, band_t* band, struct if_statement statement) {
+    region_t* condition = codegen_expr(out, band, statement.condition);
+    if (!condition->is_temp) {
+        condition = clone(condition);
+    }
+
+    region_t *inverse_condition = NULL;
+    if (statement.else_block) {
+        inverse_condition = band_allocate_tmp(band, 1);
+        move_to(inverse_condition); reset(); inc();
+    }
+
+    move_to(condition);
+    loop({
+        if (inverse_condition) {
+            move_to(inverse_condition); reset();
+        }
+
+        codegen_block(out, band, statement.if_block);
+
+        move_to(condition); reset();
+    });
+
+    if (inverse_condition) {
+        move_to(inverse_condition);
+        loop({
+            codegen_block(out, band, statement.else_block);
+
+            move_to(inverse_condition); reset();
+        });
+
+        band_region_free(band, inverse_condition);
+    }
+
+    band_region_free(band, condition);
+}
+
 void codegen_statement(FILE* out, band_t* band, struct statement* statement) {
 	switch(statement->kind) {
 		case PRINT_STATEMENT:
@@ -439,6 +478,10 @@ void codegen_statement(FILE* out, band_t* band, struct statement* statement) {
 			break;
         case MACRO_STATEMENT:
             codegen_macro_statement(out, band, statement->macro);
+            break;
+        case IF_STATEMENT:
+            codegen_if_statement(out, band, statement->if_else);
+            break;
 		default:
 			fprintf(stderr, "statement kind: %d\n", statement->kind);
 			panic("unknown statement kind");
@@ -467,12 +510,20 @@ void check_allocations(band_t* band) {
     }
 }
 
+void codegen_block(FILE* out, band_t* band, struct block* block) {
+    if (block == NULL) {
+        return;
+    }
+
+    for (size_t i = 0; i < block->length; i++) {
+        codegen_statement(out, band, block->statements[i]);
+    }
+}
+
 int codegen(FILE* out, struct block* program) {
 	band_t* band = band_init();
-	
-	for (size_t i = 0; i < program->length; i++) {
-		codegen_statement(out, band, program->statements[i]);
-	}
+
+    codegen_block(out, band, program);
 
     check_allocations(band);
 
