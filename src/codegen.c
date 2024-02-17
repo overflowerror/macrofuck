@@ -53,6 +53,7 @@ void _copy(FILE* out, band_t* band, region_t* source, region_t* target) {
 
 region_t* _clone(FILE* out, band_t* band, region_t* region) {
     region_t* clone = band_allocate_tmp(band, region->size);
+    move_to(clone); reset();
     copy(region, clone);
     return clone;
 }
