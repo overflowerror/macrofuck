@@ -32,7 +32,7 @@ extern struct block* program;
 }
 
 %type <block> stats optelse block
-%type <statement> stat print definition macrostat if
+%type <statement> stat print definition assignment macrostat if
 %type <expr> expr literal variable macroexpr calcexpr
 %type <op> op
 
@@ -93,9 +93,15 @@ print: PRINT expr
 		}
 ;
 
-definition: VAR ID ASSIGNMENT expr
+definition: VAR assignment
 		{
-			$$ = declaration_statement_new($2, $4);
+			$$ = declaration_statement_new($2);
+		}
+;
+
+assignment: ID ASSIGNMENT expr
+		{
+			$$ = assignment_statement_new($1, $3);
 		}
 ;
 

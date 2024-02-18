@@ -35,10 +35,21 @@ struct statement* print_statement_new(struct expression* expr) {
 	return stat;
 }
 
-struct statement* declaration_statement_new(char* id, struct expression* expr) {
+struct statement* declaration_statement_new(struct statement* assignment) {
+    if (assignment->kind != ASSIGNMENT_STATEMENT) {
+        panic("argument has to be assignment");
+    }
+
+    assignment->kind = DECL_STATEMENT;
+
+    return assignment;
+}
+
+
+struct statement* assignment_statement_new(char* id, struct expression* expr) {
 	_new(stat, statement);
-	stat->kind = DECL_STATEMENT;
-	stat->decl = (struct declaration_statement) {
+	stat->kind = ASSIGNMENT_STATEMENT;
+	stat->assignment = (struct assignment_statement) {
 		.id = id,
 		.value = expr,
 	};

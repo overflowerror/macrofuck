@@ -413,7 +413,7 @@ region_t* clone_region(FILE* out, band_t* band, region_t* original) {
 	return clone;
 }
 
-void codegen_decl_statement(FILE* out, band_t* band, struct declaration_statement statement) {
+void codegen_decl_statement(FILE* out, band_t* band, struct assignment_statement statement) {
 	region_t* region = codegen_expr(out, band, statement.value);
 
 	if (!region->is_temp) {
@@ -475,7 +475,7 @@ void codegen_statement(FILE* out, band_t* band, struct statement* statement) {
 			codegen_print_statement(out, band, statement->print);
 			break;
 		case DECL_STATEMENT:
-			codegen_decl_statement(out, band, statement->decl);
+			codegen_decl_statement(out, band, statement->assignment);
 			break;
         case MACRO_STATEMENT:
             codegen_macro_statement(out, band, statement->macro);
