@@ -1,0 +1,40 @@
+var a = 5;
+var b = 3;
+
+print to_str!(a);
+print "\n";
+print to_str!(b);
+print "\n";
+
+a = (a * b);
+b = (a / b);
+
+print to_str!(a);
+print "\n";
+print to_str!(b);
+print "\n";
+
+a = (a + b);
+b = a;
+
+print to_str!(a);
+print "\n";
+print to_str!(b);
+print "\n";
+
+a = a;
+b = (b / 2);
+
+print to_str!(a);
+print "\n";
+print to_str!(b);
+print "\n";
+
+a = 0;
+b = 1;
+
+print to_str!(a);
+print "\n";
+print to_str!(b);
+print "\n";
+

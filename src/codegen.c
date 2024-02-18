@@ -413,7 +413,26 @@ region_t* clone_region(FILE* out, band_t* band, region_t* original) {
 	return clone;
 }
 
+void codegen_assignment_statement(FILE* out, band_t* band, struct assignment_statement statement) {
+    region_t* region = codegen_expr(out, band, statement.value);
+    region_t* var = band_region_for_var(band, statement.id);
+    if (!var) {
+        fprintf(stderr, "variable not found: %s\n", statement.id);
+        panic("unknown variable");
+    }
+
+    move_to(var); reset();
+    copy(region, var);
+
+    region_used(band, region);
+}
+
 void codegen_decl_statement(FILE* out, band_t* band, struct assignment_statement statement) {
+    if (band_region_for_var(band, statement.id)) {
+        fprintf(stderr, "variable exists: %s\n", statement.id);
+        panic("variable exists");
+    }
+
 	region_t* region = codegen_expr(out, band, statement.value);
 
 	if (!region->is_temp) {
@@ -477,6 +496,9 @@ void codegen_statement(FILE* out, band_t* band, struct statement* statement) {
 		case DECL_STATEMENT:
 			codegen_decl_statement(out, band, statement->assignment);
 			break;
+        case ASSIGNMENT_STATEMENT:
+            codegen_assignment_statement(out, band, statement->assignment);
+            break;
         case MACRO_STATEMENT:
             codegen_macro_statement(out, band, statement->macro);
             break;

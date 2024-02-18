@@ -83,6 +83,7 @@ stats:    /* empty */
 
 stat: print
 	| definition
+	| assignment
 	| if
 	| macrostat
 ;
