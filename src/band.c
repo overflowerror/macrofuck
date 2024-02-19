@@ -3,14 +3,12 @@
 
 #include "band.h"
 #include "list.h"
-#include "dict.h"
 #include "alloc.h"
 
 band_t* band_init(void) {
 	band_t* band = safe_malloc(sizeof(band_t));
 	band->position = 0;
 	band->regions = list_new(region_t);
-	band->variables = dict_new();
 	band->band = list_new(region_t);
 	return band;
 }
@@ -22,10 +20,6 @@ region_t* band_region_for_addr(band_t* band, band_addr_t addr) {
 	} else {
 		return band->band[addr];
 	}
-}
-
-region_t* band_region_for_var(band_t* band, const char* variable) {
-	return dict_get(band->variables, variable);
 }
 
 band_addr_t band_find_gap(band_t* band, size_t size) {
@@ -80,24 +74,17 @@ region_t* band_allocate_region(band_t* band, size_t size) {
 	return region;
 }
 
-void band_make_var(band_t* band, region_t* region, const char* variable) {
-	region->variable = variable;
-	region->is_temp = false;
-	
-	dict_put(band->variables, variable, region);
-}
-
-region_t* band_allocate_var(band_t* band, size_t size, const char* variable) {
+region_t* band_allocate(band_t* band, size_t size) {
 	region_t* region = band_allocate_region(band, size);
-	band_make_var(band, region, variable);
+    region->name = NULL;
+    region->is_temp = false;
 
 	return region;
 }
 
 region_t* band_allocate_tmp(band_t* band, size_t size) {
 	region_t* region = band_allocate_region(band, size);
-
-	region->variable = NULL;
+	region->name = NULL;
 	region->is_temp = true;
 
 	return region;
@@ -107,10 +94,6 @@ void band_region_free(band_t* band, region_t* region) {
 	band->regions[region->index] = NULL;
 	for (size_t i = 0; i < region->size; i++) {
 		band->band[region->start + i] = NULL;
-	}
-
-	if (region->variable) {
-		dict_remove(band->variables, region->variable);
 	}
 
 	free(region);

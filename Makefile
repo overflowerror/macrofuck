@@ -11,7 +11,7 @@ LEXFLAGS =
 PLUGINS  = obj/macros/numbers.o
 OBJS     = obj/lex.yy.o obj/y.tab.o obj/codegen.o obj/error.o \
            obj/ast.o obj/alloc.o obj/dict.o obj/list.o obj/band.o \
-           obj/plugins.o $(PLUGINS) obj/main.o
+           obj/plugins.o obj/scope.o $(PLUGINS) obj/main.o
 DEPS     = $(OBJS:%.o=%.d)
 
 -include $(DEPS)

@@ -3,9 +3,9 @@
 
 #include <stdio.h>
 
-#include "band.h"
+#include "scope.h"
 
-typedef region_t* (*macro_t)(FILE*, band_t*, const char*);
+typedef region_t* (*macro_t)(FILE*, scope_t*, const char*);
 
 void add_plugin(const char*);
 void load_plugins(void);

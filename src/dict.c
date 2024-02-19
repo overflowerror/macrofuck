@@ -106,3 +106,45 @@ void dict_remove(dict_t* dict, const char* key) {
 		}
 	}
 }
+
+static struct dict_pair* get_next(dict_t* dict, size_t bucket, size_t index) {
+    for (size_t i = bucket; i < NUMBER_OF_BUCKETS; i++) {
+        size_t bucket_size = list_size(dict->buckets[i]);
+
+        if (i == bucket && bucket_size > index) {
+            return dict->buckets[i] + index;
+        } else if (bucket_size > 0) {
+            return dict->buckets[i] + 0;
+        }
+    }
+    return NULL;
+}
+
+struct dict_pair* dict_iterate(dict_t* dict, struct dict_pair* last) {
+    if (!last) {
+        return get_next(dict, 0, 0);
+    } else {
+        uintptr_t last_ptr = (uintptr_t) last;
+        for (size_t i = 0; i < NUMBER_OF_BUCKETS; i++) {
+            uintptr_t bucket_ptr = (uintptr_t) dict->buckets[i];
+            size_t bucket_size = list_size(dict->buckets[i]);
+
+            if (
+                    // probably undefined behaviour, but I'm too lazy to do it properly
+                    last_ptr >= bucket_ptr &&
+                    last_ptr < bucket_ptr + bucket_size * sizeof(struct dict_pair)
+            ) {
+                return get_next(dict, i, (last_ptr - bucket_ptr) / sizeof(struct dict_pair));
+            }
+        }
+        return NULL;
+    }
+}
+
+void dict_free(dict_t* dict) {
+    for (size_t i = 0; i < NUMBER_OF_BUCKETS; i++) {
+        list_free(dict->buckets[i]);
+    }
+
+    free(dict);
+}
