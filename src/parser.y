@@ -74,18 +74,18 @@ stats:    /* empty */
 		{
 			$$ = block_new();
 		}
-	| stats stat SEMICOLON
+	| stats stat
 		{
 			$$ = $1;
 			block_add_statement($$, $2);
 		}
 ;
 
-stat: print
-	| definition
-	| assignment
+stat: print SEMICOLON
+	| definition SEMICOLON
+	| assignment SEMICOLON
 	| if
-	| macrostat
+	| macrostat SEMICOLON
 ;
 
 print: PRINT expr

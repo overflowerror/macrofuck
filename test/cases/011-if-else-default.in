@@ -2,18 +2,18 @@ if 1 {
     print "foo\n";
 } else {
     print "bar\n";
-};
+}
 
 if 0 {
     print "foobar\n";
 } else {
     print "baz\n";
-};
+}
 
 if 1 {
     print "no else\n";
-};
+}
 
 if 0 {
     print "this should not be printed\n";
-};
+}
