@@ -76,6 +76,16 @@ struct statement* if_statement_new(struct expression* condition, struct block* i
     return stat;
 }
 
+struct statement* while_statement_new(struct expression* condition, struct block* block) {
+    _new(stat, statement);
+    stat->kind = WHILE_STATEMENT;
+    stat->while_loop = (struct while_statement) {
+            .condition = condition,
+            .block = block,
+    };
+    return stat;
+}
+
 struct expression* literal_expression_char_new(char c) {
 	_new(expr, expression);
 	expr->kind = LITERAL;

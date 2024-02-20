@@ -29,6 +29,7 @@ enum statement_kind {
     ASSIGNMENT_STATEMENT,
     MACRO_STATEMENT,
     IF_STATEMENT,
+    WHILE_STATEMENT,
 };
 
 struct literal_expression {
@@ -93,6 +94,11 @@ struct if_statement {
     struct block* else_block;
 };
 
+struct while_statement {
+    struct expression* condition;
+    struct block* block;
+};
+
 struct statement {
 	enum statement_kind kind;
 	union {
@@ -100,6 +106,7 @@ struct statement {
 		struct assignment_statement assignment;
         struct macro_statement macro;
         struct if_statement if_else;
+        struct while_statement while_loop;
 	};
 };
 
@@ -116,6 +123,7 @@ struct statement* declaration_statement_new(struct statement*);
 struct statement* assignment_statement_new(char*, struct expression*);
 struct statement* macro_statement_new(struct expression*);
 struct statement* if_statement_new(struct expression*, struct block*, struct block*);
+struct statement* while_statement_new(struct expression*, struct block*);
 
 struct expression* literal_expression_char_new(char);
 struct expression* literal_expression_str_new(char*);

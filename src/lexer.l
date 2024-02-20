@@ -9,8 +9,9 @@ print	"print"
 var		"var"
 if      "if"
 else    "else"
+while   "while"
 
-char		"'"."'"
+char    "'"."'"
 id		[a-zA-Z_][a-zA-Z0-9_]*
 
 %option noyywrap
@@ -68,6 +69,7 @@ strbuf_t strbuf = NULL;
 <INITIAL>{var}		{ return VAR; }
 <INITIAL>{if}       { return IF; }
 <INITIAL>{else}     { return ELSE; }
+<INITIAL>{while}    { return WHILE; }
 
 <INITIAL>"="		{ return ASSIGNMENT; }
 <INITIAL>"+"		{ return PLUS; }

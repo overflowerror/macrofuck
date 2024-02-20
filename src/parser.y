@@ -32,7 +32,7 @@ extern struct block* program;
 }
 
 %type <block> stats optelse block
-%type <statement> stat print definition assignment macrostat if
+%type <statement> stat print definition assignment macrostat if while
 %type <expr> expr literal variable macroexpr calcexpr
 %type <op> op
 
@@ -59,6 +59,7 @@ extern struct block* program;
 %token PRINT
 %token IF
 %token ELSE
+%token WHILE
 
 %start file
 
@@ -84,8 +85,9 @@ stats:    /* empty */
 stat: print SEMICOLON
 	| definition SEMICOLON
 	| assignment SEMICOLON
-	| if
 	| macrostat SEMICOLON
+	| if
+	| while
 ;
 
 print: PRINT expr
@@ -121,6 +123,13 @@ optelse: /* empty */
             $$ = $2;
         }
 ;
+
+while: WHILE expr block
+        {
+            $$ = while_statement_new($2, $3);
+        }
+;
+
 
 block: OPENING_BRACES stats CLOSING_BRACES
         {
