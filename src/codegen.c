@@ -489,6 +489,30 @@ void codegen_if_statement(FILE* out, scope_t* scope, struct if_statement stateme
     scope_remove(scope, condition);
 }
 
+void codegen_while_statement(FILE* out, scope_t* scope, struct while_statement statement) {
+    region_t* condition = scope_add_tmp(scope, 1);
+    move_to(condition); reset();
+
+    region_t* tmp = codegen_expr(out, scope, statement.condition);
+    copy(tmp, condition);
+    region_used(scope, tmp);
+
+    move_to(condition);
+    loop({
+        codegen_block(out, scope, statement.block);
+
+        tmp = codegen_expr(out, scope, statement.condition);
+        move_to(condition); reset();
+        copy(tmp, condition);
+
+        region_used(scope, tmp);
+
+        move_to(condition);
+    });
+
+    scope_remove(scope, condition);
+}
+
 void codegen_statement(FILE* out, scope_t* scope, struct statement* statement) {
 	switch(statement->kind) {
 		case PRINT_STATEMENT:
@@ -505,6 +529,9 @@ void codegen_statement(FILE* out, scope_t* scope, struct statement* statement) {
             break;
         case IF_STATEMENT:
             codegen_if_statement(out, scope, statement->if_else);
+            break;
+        case WHILE_STATEMENT:
+            codegen_while_statement(out, scope, statement->while_loop);
             break;
 		default:
 			fprintf(stderr, "statement kind: %d\n", statement->kind);
