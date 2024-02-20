@@ -111,8 +111,10 @@ static struct dict_pair* get_next(dict_t* dict, size_t bucket, size_t index) {
     for (size_t i = bucket; i < NUMBER_OF_BUCKETS; i++) {
         size_t bucket_size = list_size(dict->buckets[i]);
 
-        if (i == bucket && bucket_size > index) {
-            return dict->buckets[i] + index;
+        if (i == bucket) {
+            if (bucket_size > index) {
+                return dict->buckets[i] + index;
+            }
         } else if (bucket_size > 0) {
             return dict->buckets[i] + 0;
         }
@@ -134,7 +136,7 @@ struct dict_pair* dict_iterate(dict_t* dict, struct dict_pair* last) {
                     last_ptr >= bucket_ptr &&
                     last_ptr < bucket_ptr + bucket_size * sizeof(struct dict_pair)
             ) {
-                return get_next(dict, i, (last_ptr - bucket_ptr) / sizeof(struct dict_pair));
+                return get_next(dict, i, (last_ptr - bucket_ptr) / sizeof(struct dict_pair) + 1);
             }
         }
         return NULL;
