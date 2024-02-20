@@ -534,7 +534,9 @@ void check_allocations(band_t* band) {
     }
 }
 
-void codegen_block(FILE* out, scope_t* scope, struct block* block) {
+void codegen_block(FILE* out, scope_t* parent, struct block* block) {
+    scope_t* scope = scope_new(parent);
+
     if (block == NULL) {
         return;
     }
@@ -542,6 +544,8 @@ void codegen_block(FILE* out, scope_t* scope, struct block* block) {
     for (size_t i = 0; i < block->length; i++) {
         codegen_statement(out, scope, block->statements[i]);
     }
+
+    scope_free(scope);
 }
 
 int codegen(FILE* out, struct block* program) {
@@ -550,6 +554,7 @@ int codegen(FILE* out, struct block* program) {
 
     codegen_block(out, global, program);
 
+    scope_free(global);
     check_allocations(band);
 
 	return 0;
