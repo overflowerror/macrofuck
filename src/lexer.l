@@ -72,11 +72,16 @@ strbuf_t strbuf = NULL;
 <INITIAL>{while}    { return WHILE; }
 
 <INITIAL>"="		{ return ASSIGNMENT; }
+
 <INITIAL>"+"		{ return PLUS; }
 <INITIAL>"-"		{ return MINUS; }
 <INITIAL>"*"		{ return TIMES; }
 <INITIAL>"/"		{ return DIVIDE; }
 <INITIAL>"%"		{ return MOD; }
+
+<INITIAL>"=="       { return EQUAL; }
+<INITIAL>"!="       { return NOT_EQUAL; }
+
 <INITIAL>"("        { return OPENING_BRACKETS; }
 <INITIAL>")"        { return CLOSING_BRACKETS; }
 <INITIAL>"{"        { return OPENING_BRACES; }

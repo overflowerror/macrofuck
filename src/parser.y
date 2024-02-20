@@ -49,6 +49,8 @@ extern struct block* program;
 %token TIMES
 %token DIVIDE
 %token MOD
+%token EQUAL
+%token NOT_EQUAL
 
 %token OPENING_BRACKETS
 %token CLOSING_BRACKETS
@@ -178,6 +180,14 @@ op: PLUS
     | MOD
         {
             $$ = MODULO;
+        }
+    | EQUAL
+        {
+            $$ = EQUALS;
+        }
+    | NOT_EQUAL
+        {
+            $$ = NOT_EQUALS;
         }
 ;
 

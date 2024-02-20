@@ -322,6 +322,51 @@ region_t* codegen_modulo(FILE* out, scope_t* scope, region_t* op1, region_t* op2
     return op1;
 }
 
+region_t* codegen_equals(FILE* out, scope_t* scope, region_t* op1, region_t* op2) {
+    if (!op1->is_temp) {
+        op1 = clone(op1);
+    }
+    if (!op2->is_temp) {
+        op2 = clone(op2);
+    }
+
+    move_to(op2);
+    loop({
+        dec();
+        move_to(op1); dec();
+        move_to(op2);
+    });
+    inc();
+
+    move_to(op1);
+    loop({
+        move_to(op2); dec();
+        move_to(op1); reset();
+    });
+
+    scope_remove(scope, op1);
+    return op2;
+}
+
+region_t* codegen_not_equals(FILE* out, scope_t* scope, region_t* op1, region_t* op2) {
+    if (!op1->is_temp) {
+        op1 = clone(op1);
+    }
+    if (!op2->is_temp) {
+        op2 = clone(op2);
+    }
+
+    move_to(op2);
+    loop({
+             dec();
+             move_to(op1); dec();
+             move_to(op2);
+         });
+
+    scope_remove(scope, op2);
+    return op1;
+}
+
 region_t* codegen_calc_expr(FILE* out, scope_t* scope, struct calc_expression expr) {
     region_t* operand1 = codegen_expr(out, scope, expr.operand1);
     region_t* operand2 = codegen_expr(out, scope, expr.operand2);
@@ -343,6 +388,12 @@ region_t* codegen_calc_expr(FILE* out, scope_t* scope, struct calc_expression ex
             break;
         case MODULO:
             result = codegen_modulo(out, scope, operand1, operand2);
+            break;
+        case EQUALS:
+            result = codegen_equals(out, scope, operand1, operand2);
+            break;
+        case NOT_EQUALS:
+            result = codegen_not_equals(out, scope, operand1, operand2);
             break;
         default:
             fprintf(stderr, "unknown operator: %d\n", expr.operator);

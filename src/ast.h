@@ -56,6 +56,8 @@ enum calc_operator {
     MULTIPLICATION,
     DIVISION,
     MODULO,
+    EQUALS,
+    NOT_EQUALS,
 };
 
 struct calc_expression {
