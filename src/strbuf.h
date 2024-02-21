@@ -19,13 +19,13 @@ typedef char* strbuf_t;
 }
 #define strbuf_append(b, s) { \
 	size_t l = strlen(s); \
-	list_ensure_space(b, 1, l); \
+	(b) = list_ensure_space(b, 1, l); \
 	strcat(b, s); \
 	list_header(b)->length += l; \
 }
 
 #define strbuf_append_c(b, c) { \
-    list_ensure_space(b, 1, 1); \
+    (b) = list_ensure_space(b, 1, 1); \
 	b[list_size(b) - 1] = c; \
     b[list_size(b)] = '\0'; \
     list_header(b)->length += 1; \
