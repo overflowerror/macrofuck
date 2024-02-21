@@ -25,8 +25,10 @@ typedef char* strbuf_t;
 }
 
 #define strbuf_append_c(b, c) { \
-	list_add(b, '\0'); \
+    list_ensure_space(b, 1, 1); \
 	b[list_size(b) - 1] = c; \
+    b[list_size(b)] = '\0'; \
+    list_header(b)->length += 1; \
 }
 
 #endif
