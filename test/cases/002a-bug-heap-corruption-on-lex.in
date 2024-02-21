@@ -1,0 +1,14 @@
+print " bottle of beer on the wall.\n";
+print " bottle of beer.\n";
+print "Take on down, pass it around.\n";
+print " bottles of beer on the wall.\n";
+print " bottles of beer.\n";
+print "Take on down, pass it around.\n";
+print " bottle of beer on the wall.\n";
+print " bottles of beer on the wall.\n";
+print "\n";
+print "No more bottles of beer on the wall,\n";
+print "no more bottles of beer.\n";
+print "We've taken them down\n";
+print "and passed them around;\n";
+print "now we're drunk and passed out!\n";
