@@ -48,7 +48,7 @@ macro_t find_macro(const char* name) {
             return (macro_t) candidate;
         }
     }
-    fprintf(stderr, "No plugin for macro found.");
+    fprintf(stderr, "No plugin for macro found: %s\n", name);
     panic("macro not found");
     return NULL;
 }
