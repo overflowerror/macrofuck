@@ -1,5 +1,5 @@
 CC       = gcc
-CFLAGS   = -std=c11 -Wall -Wpedantic -g -I./src -I./gen
+CFLAGS   = -std=c11 -D_POSIX_C_SOURCE=200809L -Wall -Wpedantic -g -I./src -I./gen
 LD       = gcc
 LDFLAGS  = 
 YACC     = bison

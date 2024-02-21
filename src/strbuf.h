@@ -11,6 +11,7 @@ typedef char* strbuf_t;
 #define strbuf_clear(b) { \
 	if (b == NULL) { \
 		b = strbuf_new(); \
+        list_add(b, '\0'); \
 	} else { \
 		list_header(b)->length = 1; \
 		b[0] = '\0'; \

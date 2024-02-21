@@ -15,7 +15,7 @@ extern int yydebug;
 
 #define DEBUG_MODE (0)
 
-struct block* program;
+struct block* program = NULL;
 
 void help(void) {
 	printf("// TODO\n");
@@ -76,6 +76,8 @@ int main(int argc, char** argv) {
 
     if (DEBUG_MODE) fprintf(stderr, INFO("loading modules\n"));
     load_plugins();
+
+    fprintf(stderr, "first stat ptr: %p\n", (void*) program->statements[0]);
 
     if (DEBUG_MODE) fprintf(stderr, INFO("generating code\n"));
 	result = codegen(output, program);

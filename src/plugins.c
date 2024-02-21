@@ -31,7 +31,7 @@ void load_plugins(void) {
     size_t size = list_size(plugins);
     for (size_t i = 0; i < size; i++) {
         const char* name = plugins[i].name;
-        void* handle = dlopen(name, RTLD_NOW | RTLD_LOCAL | RTLD_FIRST);
+        void* handle = dlopen(name, RTLD_NOW | RTLD_LOCAL);
         if (!handle) {
             fprintf(stderr, "plugin %s: %s\n", name, dlerror());
             panic("failed to load plugin");
