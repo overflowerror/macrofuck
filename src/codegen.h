@@ -24,9 +24,13 @@
 #define copy(s, t) _copy(out, scope, s, t)
 #define clone(s) _clone(out, scope, s)
 
+#define reset_region(r) _reset_region(out, scope, r)
+
 void _move_to(FILE*, scope_t*, size_t);
 void _copy(FILE*, scope_t*, region_t*, region_t*);
 region_t* _clone(FILE*, scope_t*, region_t*);
+void _reset_region(FILE*, scope_t*, region_t*);
+
 
 int codegen(FILE*, struct block*);
 

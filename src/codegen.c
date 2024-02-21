@@ -66,17 +66,6 @@ static void region_used(scope_t* scope, region_t* region) {
 	}
 }
 
-static void reset_position(FILE* out, scope_t* scope, band_addr_t position) {
-	move(position);
-	reset();
-}
-
-static void reset_region(FILE* out, scope_t* scope, region_t* region) {
-	for (size_t i = 0; i < region->size; i++) {
-		reset_position(out, scope, region->start + i);
-	}
-}
-
 void codegen_add_char(FILE* out, scope_t* scope, size_t position, char c) {
 	move(position);
 	reset();
@@ -438,9 +427,9 @@ region_t* clone_region(FILE* out, scope_t* scope, region_t* original) {
 	region_t* tmp = scope_add_tmp(scope, 1);
 	region_t* clone = scope_add_tmp(scope, original->size);
 
-	reset_position(out, scope, tmp->start);
+	move_to(tmp); reset();
 	for (size_t i = 0; i < original->size; i++) {
-		reset_position(out, scope, clone->start + i);
+		move_offset(clone, i); reset();
 
 		move_offset(original, i);
         loop({
@@ -465,6 +454,12 @@ region_t* clone_region(FILE* out, scope_t* scope, region_t* original) {
 	return clone;
 }
 
+void _reset_region(FILE* out, scope_t* scope, region_t* region) {
+    for (size_t i = 0; i < region->size; i++) {
+        move_offset(region, i); reset();
+    }
+}
+
 void codegen_assignment_statement(FILE* out, scope_t* scope, struct assignment_statement statement) {
     region_t* region = codegen_expr(out, scope, statement.value);
     region_t* var = scope_get(scope, statement.id);
@@ -473,8 +468,10 @@ void codegen_assignment_statement(FILE* out, scope_t* scope, struct assignment_s
         panic("unknown variable");
     }
 
-    move_to(var); reset();
-    copy(region, var);
+    if (var->start != region->start) {
+        reset_region(var);
+        copy(region, var);
+    }
 
     region_used(scope, region);
 }
