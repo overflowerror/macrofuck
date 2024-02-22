@@ -8,7 +8,7 @@ LEX      = lex
 LEXFLAGS =
 
 
-OBJS     = obj/main.o
+OBJS     = obj/networking.o obj/main.o
 DEPS     = $(OBJS:%.o=%.d)
 
 -include $(DEPS)
