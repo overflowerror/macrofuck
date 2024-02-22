@@ -53,7 +53,7 @@ dkms.conf
 
 obj/ast.o
 gen/**
-compiler/build/**
+build/**
 macrofuck
 
 m.gen.bf
