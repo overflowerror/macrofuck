@@ -18,17 +18,17 @@ DEPS     = $(OBJS:%.o=%.d)
 
 all: macrofuck test
 
-gen/lex.yy.c: src/lexer.l gen/y.tab.c
+gen/lex.yy.c: src/lexer.l gen
 	$(LEX) $(LEXFLAGS) -o $@ $<
 
-gen/y.tab.c: src/parser.y src/ast.h src/error.h
+gen/y.tab.c: src/parser.y src src
 	$(YACC) $(YFLAGS) -o $@ $<
 
-obj/lex.yy.o: gen/lex.yy.c
+obj/lex.yy.o: gen
 	$(CC) $(CFLAGS) -c -o $@ $<
-obj/y.tab.o: gen/y.tab.c
+obj/y.tab.o: gen
 	$(CC) $(CFLAGS) -c -o $@ $<
-obj/%.o: src/%.c obj
+obj/%.o: src obj
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 macrofuck: $(OBJS)
