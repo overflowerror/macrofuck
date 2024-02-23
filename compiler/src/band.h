@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "list.h"
+#include <list.h>
 
 typedef size_t band_addr_t;
 

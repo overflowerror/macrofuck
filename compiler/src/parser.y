@@ -8,7 +8,8 @@
 #include <string.h>
 #include <errno.h>
 
-#include "error.h"
+#include <error.h>
+
 #include "ast.h"
 
 int yylex(void);

@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#include <alloc.h>
+
 #include "band.h"
-#include "list.h"
-#include "alloc.h"
 
 band_t* band_init(void) {
 	band_t* band = safe_malloc(sizeof(band_t));

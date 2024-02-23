@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <getopt.h>
 
-#include "error.h"
+#include <error.h>
+
 #include "ast.h"
 #include "codegen.h"
 #include "plugins.h"

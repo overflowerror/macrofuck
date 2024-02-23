@@ -30,10 +30,10 @@ id		[a-zA-Z_][a-zA-Z0-9_]*
 #include <stdbool.h>
 #include <string.h>
 
-#include "y.tab.h"
+#include <strbuf.h>
+#include <error.h>
 
-#include "strbuf.h"
-#include "error.h"
+#include "y.tab.h"
 
 %}
 

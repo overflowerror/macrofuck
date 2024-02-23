@@ -1,8 +1,9 @@
 #include <stdlib.h>
 
+#include <error.h>
+#include <alloc.h>
+
 #include "ast.h"
-#include "error.h"
-#include "alloc.h"
 
 #define _new(n, t) struct t* n = safe_malloc(sizeof(struct t))
 

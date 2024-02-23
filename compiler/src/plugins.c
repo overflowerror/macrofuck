@@ -2,8 +2,9 @@
 
 #include <dlfcn.h>
 
+#include <error.h>
+
 #include "plugins.h"
-#include "error.h"
 
 struct plugin {
     const char* name;

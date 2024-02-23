@@ -1,10 +1,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include <alloc.h>
+#include <dict.h>
+
 #include "scope.h"
 #include "band.h"
-#include "alloc.h"
-#include "dict.h"
 
 scope_t* scope_init(band_t* band) {
     scope_t* root = scope_new(NULL);

@@ -1,5 +1,8 @@
+#include <stdio.h>
+
+#include <error.h>
+
 #include "../scope.h"
-#include "../error.h"
 #include "../codegen.h"
 
 extern region_t* to_str(FILE* out, scope_t* scope, const char* _arg) {

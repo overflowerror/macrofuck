@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <error.h>
+
 #include "codegen.h"
 #include "ast.h"
 #include "band.h"
 #include "scope.h"
-#include "error.h"
 #include "plugins.h"
 
 

@@ -1,7 +1,8 @@
 #ifndef SCOPE_H
 #define SCOPE_H
 
-#include "dict.h"
+#include <dict.h>
+
 #include "band.h"
 
 typedef struct scope {
