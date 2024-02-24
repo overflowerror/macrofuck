@@ -98,19 +98,7 @@ static request_t prepare_request_obj(int fd) {
     request.request_body = fdopen(fd, "r");
     request.response_body = fdopen(fd2, "w");
 
-    #define HEADER_BUFFER_LENGTH (128)
-    char* buffer = alloca(HEADER_BUFFER_LENGTH);
-
-    // skip headers (for now)
-    while (true) {
-        fgets(buffer, HEADER_BUFFER_LENGTH - 1, request.request_body);
-
-        if (strcmp(buffer, "\r\n")) {
-            break;
-        }
-
-        printf("  discarded header: %s\n", buffer);
-    }
+    request.request_header = header_parse(request.request_body);
 
     return request;
 }
@@ -150,8 +138,10 @@ int run_server(const char* bind_addr, handler_t handler) {
     while (true) {
         // we don't care for the remote address right now
         int fd = accept(sock, NULL, 0);
+        fprintf(stderr, "new connection: %d\n", fd);
         if (fd < 0) {
             fprintf(stderr, "warn: accept failed: %s\n", strerror(errno));
+
         }
 
         handle_connection(fd, handler);
