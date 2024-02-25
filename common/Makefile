@@ -30,13 +30,19 @@ common.a: CFLAGS += -fPIC
 common.a: $(OBJS)
 	$(AR) $(ARFLAGS) $@ $^
 
-test: common.a
-	@echo "no tests for common yet"
+test: CFLAGS += -I../testing/src/
+test: obj/tests.o common.a ../testing/testing.a
+	$(LD) $(LDFLAGS) -o $@ $^
+	./test
+
+../testing/testing.a: FORCE
+	cd ../testing/ && $(MAKE) testing.a
 
 FORCE: ;
 
 clean:
 	@echo "Cleaning up"
+	cd ../testing/ && $(MAKE) clean
 	@rm -f obj/*.o
 	@rm -f obj/*.d
 	@rm common.a
