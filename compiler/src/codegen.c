@@ -361,7 +361,7 @@ region_t* codegen_calc_expr(FILE* out, scope_t* scope, struct calc_expression ex
     region_t* operand1 = codegen_expr(out, scope, expr.operand1);
     region_t* operand2 = codegen_expr(out, scope, expr.operand2);
 
-    region_t* result;
+    region_t* result = NULL;
 
     switch (expr.operator) {
         case ADDITION:
