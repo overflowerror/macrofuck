@@ -52,6 +52,8 @@ extern struct block* program;
 %token MOD
 %token EQUAL
 %token NOT_EQUAL
+%token AND
+%token OR
 
 %token OPENING_BRACKETS
 %token CLOSING_BRACKETS
@@ -189,6 +191,14 @@ op: PLUS
     | NOT_EQUAL
         {
             $$ = NOT_EQUALS;
+        }
+    | AND
+        {
+            $$ = CONJUNCTION;
+        }
+    | OR
+        {
+            $$ = DISJUNCTION;
         }
 ;
 

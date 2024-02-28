@@ -81,6 +81,8 @@ strbuf_t strbuf = NULL;
 
 <INITIAL>"=="       { return EQUAL; }
 <INITIAL>"!="       { return NOT_EQUAL; }
+<INITIAL>"&&"       { return AND; }
+<INITIAL>"||"       { return OR; }
 
 <INITIAL>"("        { return OPENING_BRACKETS; }
 <INITIAL>")"        { return CLOSING_BRACKETS; }

@@ -58,6 +58,8 @@ enum calc_operator {
     MODULO,
     EQUALS,
     NOT_EQUALS,
+    CONJUNCTION,
+    DISJUNCTION,
 };
 
 struct calc_expression {
