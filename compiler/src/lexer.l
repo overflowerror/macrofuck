@@ -89,7 +89,7 @@ strbuf_t strbuf = NULL;
 <INITIAL>"{"        { return OPENING_BRACES; }
 <INITIAL>"}"        { return CLOSING_BRACES; }
 
-<INITIAL>"!("       { BEGIN MACRO; strbuf_clear(strbuf); }
+<INITIAL>"$("       { BEGIN MACRO; strbuf_clear(strbuf); }
 <MACRO>[^\\)]*     { strbuf_append(strbuf, yytext); }
 <MACRO>"\\)"          { strbuf_append_c(strbuf, yytext[1]); }
 <MACRO>"\\("		    { strbuf_append_c(strbuf, yytext[1]); }

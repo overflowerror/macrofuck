@@ -1,7 +1,7 @@
 var i = 10;
 
 while i {
-    print to_str!(i);
+    print to_str$(i);
     print "\n";
     i = (i - 1);
 }

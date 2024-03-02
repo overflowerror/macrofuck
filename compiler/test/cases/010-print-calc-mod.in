@@ -1,5 +1,5 @@
 var a = 255;
 var b = 99;
 var c = (a % b);
-print to_str!(c);
+print to_str$(c);
 print "\n";
