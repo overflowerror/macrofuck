@@ -54,6 +54,7 @@ extern struct block* program;
 %token NOT_EQUAL
 %token AND
 %token OR
+%token NOT
 
 %token OPENING_BRACKETS
 %token CLOSING_BRACKETS
@@ -161,6 +162,10 @@ expr: 	  literal
 calcexpr: OPENING_BRACKETS expr op expr CLOSING_BRACKETS
         {
             $$ = calc_expression_new($2, $4, $3);
+        }
+    | NOT expr
+        {
+            $$ = calc_expression_new($2, NULL, NEGATION);
         }
 ;
 

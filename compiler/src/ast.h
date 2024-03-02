@@ -60,6 +60,7 @@ enum calc_operator {
     NOT_EQUALS,
     CONJUNCTION,
     DISJUNCTION,
+    NEGATION,
 };
 
 struct calc_expression {

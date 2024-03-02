@@ -83,6 +83,7 @@ strbuf_t strbuf = NULL;
 <INITIAL>"!="       { return NOT_EQUAL; }
 <INITIAL>"&&"       { return AND; }
 <INITIAL>"||"       { return OR; }
+<INITIAL>"!"        { return NOT; }
 
 <INITIAL>"("        { return OPENING_BRACKETS; }
 <INITIAL>")"        { return CLOSING_BRACKETS; }
