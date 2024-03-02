@@ -357,6 +357,71 @@ region_t* codegen_not_equals(FILE* out, scope_t* scope, region_t* op1, region_t*
     return op1;
 }
 
+region_t* codegen_conjunction(FILE* out, scope_t* scope, region_t* op1, region_t* op2) {
+    if (!op1->is_temp) {
+        op1 = clone(op1);
+    }
+    if (!op2->is_temp) {
+        op2 = clone(op2);
+    }
+
+    region_t* tmp = scope_add_tmp(scope, 1);
+    move_to(tmp); reset();
+
+    move_to(op1);
+    loop({
+       move_to(op2);
+       loop({
+           move_to(tmp); inc();
+           move_to(op2); reset();
+       });
+
+       move_to(op1); reset();
+    });
+
+    scope_remove(scope, op1);
+    scope_remove(scope, op2);
+
+    return tmp;
+}
+
+region_t* codegen_disjunction(FILE* out, scope_t* scope, region_t* op1, region_t* op2) {
+    if (!op1->is_temp) {
+        op1 = clone(op1);
+    }
+    if (!op2->is_temp) {
+        op2 = clone(op2);
+    }
+
+    region_t* tmp = scope_add_tmp(scope, 1);
+    move_to(tmp); reset();
+
+    move_to(op1);
+    loop({
+        move_to(tmp); inc();
+        move_to(op1); reset();
+    });
+
+    move_to(op2);
+    loop({
+        move_to(tmp); inc();
+        move_to(op2); reset();
+    });
+
+    move_to(tmp);
+    loop({
+        move_to(op1); inc();
+        move_to(tmp); reset();
+    })
+
+    scope_remove(scope, op2);
+    scope_remove(scope, tmp);
+
+    return op1;
+}
+
+
+
 region_t* codegen_calc_expr(FILE* out, scope_t* scope, struct calc_expression expr) {
     region_t* operand1 = codegen_expr(out, scope, expr.operand1);
     region_t* operand2 = codegen_expr(out, scope, expr.operand2);
@@ -384,6 +449,12 @@ region_t* codegen_calc_expr(FILE* out, scope_t* scope, struct calc_expression ex
             break;
         case NOT_EQUALS:
             result = codegen_not_equals(out, scope, operand1, operand2);
+            break;
+        case CONJUNCTION:
+            result = codegen_conjunction(out, scope, operand1, operand2);
+            break;
+        case DISJUNCTION:
+            result = codegen_disjunction(out, scope, operand1, operand2);
             break;
         default:
             fprintf(stderr, "unknown operator: %d\n", expr.operator);
