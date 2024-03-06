@@ -420,11 +420,31 @@ region_t* codegen_disjunction(FILE* out, scope_t* scope, region_t* op1, region_t
     return op1;
 }
 
+region_t* codegen_negation(FILE* out, scope_t* scope, region_t* op) {
+    if (!op->is_temp) {
+        op = clone(op);
+    }
 
+    region_t* result = scope_add_tmp(scope, 1);
+    move_to(result); reset(); inc();
+
+    move_to(op);
+    loop({
+        move_to(result); dec();
+        move_to(op); reset();
+    });
+
+    scope_remove(scope, op);
+
+    return result;
+}
 
 region_t* codegen_calc_expr(FILE* out, scope_t* scope, struct calc_expression expr) {
     region_t* operand1 = codegen_expr(out, scope, expr.operand1);
-    region_t* operand2 = codegen_expr(out, scope, expr.operand2);
+    region_t* operand2 = NULL;
+    if (expr.operand2) {
+        operand2 = codegen_expr(out, scope, expr.operand2);
+    }
 
     region_t* result = NULL;
 
@@ -455,6 +475,9 @@ region_t* codegen_calc_expr(FILE* out, scope_t* scope, struct calc_expression ex
             break;
         case DISJUNCTION:
             result = codegen_disjunction(out, scope, operand1, operand2);
+            break;
+        case NEGATION:
+            result = codegen_negation(out, scope, operand1);
             break;
         default:
             fprintf(stderr, "unknown operator: %d\n", expr.operator);
