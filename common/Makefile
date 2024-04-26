@@ -32,6 +32,7 @@ common.a: $(OBJS)
 
 test: CFLAGS += -I../testing/src/
 test: obj/tests.o common.a ../testing/testing.a
+	cd ../testing/ && $(MAKE) test
 	$(LD) $(LDFLAGS) -o $@ $^
 	./test
 
