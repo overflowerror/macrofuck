@@ -8,7 +8,7 @@
 #include "ast.h"
 #include "band.h"
 #include "scope.h"
-#include "plugins.h"
+#include "builtins/builtins.h"
 
 
 void _move_to(FILE* out, scope_t* scope, size_t target) {
@@ -114,8 +114,17 @@ region_t* codegen_variable_expr(FILE* _, scope_t* scope, struct variable_express
 }
 
 region_t* codegen_macro_expr(FILE* out, scope_t* scope, struct macro_expression expr) {
-    macro_t macro = find_macro(expr.id);
-    return macro(out, scope, expr.argument);
+    builtin_t macro = find_builtin(expr.id);
+    if (macro == NULL) {
+        panic("unable to find builtin");
+    }
+
+    region_t* arg = scope_get(scope, expr.argument);
+    if (arg == NULL) {
+        panic("argument has to be a variable");
+    }
+
+    return macro(out, scope, 1, &arg);
 }
 
 region_t* codegen_expr(FILE*, scope_t*, struct expression*);

@@ -5,11 +5,12 @@
 #include "../scope.h"
 #include "../codegen.h"
 
-extern region_t* to_str(FILE* out, scope_t* scope, const char* _arg) {
-    region_t* arg = scope_get(scope, _arg);
-    if (!arg) {
-        panic("argument has to be a variable");
+extern region_t* to_str(FILE* out, scope_t* scope, size_t argc, region_t** argv) {
+    if (argc != 1) {
+        panic("to_str() needs exactly 1 argument");
     }
+
+    region_t* arg = argv[0];
 
     region_t* str = scope_add_tmp(scope, 3);
     for (size_t i = 0; i < str->size; i++) {

@@ -9,9 +9,10 @@ LEXFLAGS =
 MAKE     = make
 
 
-PLUGINS  = obj/macros/numbers.o
+PLUGINS  =
+BUILTINS = obj/builtins/builtins.o obj/builtins/numbers.o
 OBJS     = obj/lex.yy.o obj/y.tab.o obj/codegen.o obj/ast.o obj/band.o \
-           obj/plugins.o obj/scope.o $(PLUGINS) obj/main.o
+           obj/plugins.o obj/scope.o $(PLUGINS) $(BUILTINS) obj/main.o
 DEPS     = $(OBJS:%.o=%.d)
 
 -include $(DEPS)
@@ -38,6 +39,7 @@ macrofuck: $(OBJS) ../common/common.a
 	cd ../common/ && $(MAKE) common.a
 
 test: macrofuck FORCE
+	cd ../common/ && $(MAKE) test
 	./test/tests.sh "./macrofuck"
 
 FORCE: ;
