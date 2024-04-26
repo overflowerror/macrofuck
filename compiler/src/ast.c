@@ -141,6 +141,24 @@ struct expression* macro_expression_new(char* id, char* arg) {
     return expr;
 }
 
+struct expression* builtin_call_expression_new(void) {
+    _new(expr, expression);
+    expr->kind = BUILTIN_CALL;
+    expr->type = UNKNOWN_TYPE;
+    expr->builtin_call = (struct builtin_call_expression) {
+        .id = NULL,
+        .argument_number = 0,
+        .arguments = NULL,
+    };
+    return expr;
+}
+
+void builtin_call_expression_add_argument(struct expression* builtin_call, struct expression* argument) {
+    safe_realloc(builtin_call->builtin_call.arguments, ++builtin_call->builtin_call.argument_number * sizeof(struct expression*));
+    builtin_call->builtin_call.arguments[builtin_call->builtin_call.argument_number - 1] = argument;
+}
+
+
 struct expression* calc_expression_new(struct expression* operand1, struct expression* operand2, enum calc_operator operator) {
     _new(expr, expression);
     expr->kind = CALCULATION;

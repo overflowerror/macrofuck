@@ -78,6 +78,7 @@ strbuf_t strbuf = NULL;
 <INITIAL>"*"		{ return TIMES; }
 <INITIAL>"/"		{ return DIVIDE; }
 <INITIAL>"%"		{ return MOD; }
+<INITIAL>","        { return COMMA; }
 
 <INITIAL>"=="       { return EQUAL; }
 <INITIAL>"!="       { return NOT_EQUAL; }

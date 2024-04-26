@@ -34,7 +34,7 @@ extern struct block* program;
 
 %type <block> stats optelse block
 %type <statement> stat print definition assignment macrostat if while
-%type <expr> expr literal variable macroexpr calcexpr
+%type <expr> expr literal variable macroexpr builtincall calcexpr argumentlist
 %type <op> op
 
 %token <number> NUM 
@@ -55,6 +55,7 @@ extern struct block* program;
 %token AND
 %token OR
 %token NOT
+%token COMMA
 
 %token OPENING_BRACKETS
 %token CLOSING_BRACKETS
@@ -149,14 +150,34 @@ macrostat: macroexpr
         }
 ;
 
-expr: 	  literal
+expr: literal
 	| variable
 	| macroexpr
+	| builtincall
 	| OPENING_BRACKETS expr CLOSING_BRACKETS
 	    {
 	        $$ = $2;
 	    }
 	| calcexpr
+;
+
+builtincall: ID OPENING_BRACKETS argumentlist CLOSING_BRACKETS
+    {
+        $$ = $3;
+        $$->builtin_call.id = $1;
+    }
+;
+
+argumentlist: expr
+                {
+                    $$ = builtin_call_expression_new();
+                    builtin_call_expression_add_argument($$, $1);
+                }
+            | expr COMMA argumentlist
+                {
+                    $$ = $1;
+                    builtin_call_expression_add_argument($$, $3);
+                }
 ;
 
 calcexpr: OPENING_BRACKETS expr op expr CLOSING_BRACKETS
