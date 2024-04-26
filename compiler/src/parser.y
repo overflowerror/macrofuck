@@ -52,15 +52,19 @@ extern struct block* program;
 %token MOD
 %token EQUAL
 %token NOT_EQUAL
+%token GREATER
+%token LESS
+%token GREATER_EQUAL
+%token LESS_EQUAL
 %token AND
 %token OR
 %token NOT
-%token COMMA
 
 %token OPENING_BRACKETS
 %token CLOSING_BRACKETS
 %token OPENING_BRACES
 %token CLOSING_BRACES
+%token COMMA
 
 %token VAR
 %token IF
@@ -209,6 +213,22 @@ op: PLUS
     | NOT_EQUAL
         {
             $$ = NOT_EQUALS;
+        }
+    | GREATER
+        {
+           $$ = GREATER_THAN;
+        }
+    | LESS
+        {
+           $$ = LESS_THAN;
+        }
+    | GREATER_EQUAL
+        {
+           $$ = GREATER_EQUALS;
+        }
+    | LESS_EQUAL
+        {
+           $$ = LESS_EQUALS;
         }
     | AND
         {

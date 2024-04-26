@@ -1,0 +1,27 @@
+if (45 < 44) {
+    print("no, greater\n");
+}
+if (44 < 45) {
+    print("yes, smaller\n");
+}
+if (45 < 45) {
+    print("no, equal\n");
+}
+if (1 < 0) {
+    print("no, greater 0\n");
+}
+if (0 < 1) {
+    print("yes, smaller 0\n");
+}
+if (0 < 0) {
+    print("no, equals 0\n");
+}
+if (255 < 254) {
+    print("no, greater max\n");
+}
+if (254 < 255) {
+    print("yes, smaller max\n");
+}
+if (255 < 255) {
+    print("no, equals max\n");
+}
