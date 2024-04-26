@@ -5,12 +5,14 @@
 #define decl(n) region_t* n(FILE*, scope_t*, size_t, region_t**)
 
 decl(to_str);
+decl(print);
 
 static struct builtin_list_item {
     const char* name;
     builtin_t function;
 } builtins[] = {
-    {"to_str", to_str },
+    {"to_str", to_str},
+    {"print", print},
 };
 
 builtin_t find_builtin(const char* name) {

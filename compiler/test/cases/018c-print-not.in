@@ -1,7 +1,7 @@
 if (!0) {
-    print "yes 0\n";
+    print("yes 0\n");
 }
 
 if (!1) {
-    print "no 1\n";
+    print("no 1\n");
 }

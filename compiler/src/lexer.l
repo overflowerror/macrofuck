@@ -65,7 +65,6 @@ strbuf_t strbuf = NULL;
 <STRING>\\.		{ lex_panic("invalid escape: %s\n", yytext); }
 <STRING>\n		{ lex_panic("newline in string\n"); }
 
-<INITIAL>{print}	{ return PRINT; }
 <INITIAL>{var}		{ return VAR; }
 <INITIAL>{if}       { return IF; }
 <INITIAL>{else}     { return ELSE; }

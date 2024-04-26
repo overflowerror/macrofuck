@@ -33,7 +33,7 @@ extern struct block* program;
 }
 
 %type <block> stats optelse block
-%type <statement> stat print definition assignment macrostat if while
+%type <statement> stat definition assignment exprstat if while
 %type <expr> expr literal variable macroexpr builtincall calcexpr argumentlist
 %type <op> op
 
@@ -63,7 +63,6 @@ extern struct block* program;
 %token CLOSING_BRACES
 
 %token VAR
-%token PRINT
 %token IF
 %token ELSE
 %token WHILE
@@ -89,18 +88,11 @@ stats:    /* empty */
 		}
 ;
 
-stat: print SEMICOLON
-	| definition SEMICOLON
+stat: definition SEMICOLON
 	| assignment SEMICOLON
-	| macrostat SEMICOLON
+	| exprstat SEMICOLON
 	| if
 	| while
-;
-
-print: PRINT expr
-		{
-			$$ = print_statement_new($2);
-		}
 ;
 
 definition: VAR assignment
@@ -144,10 +136,10 @@ block: OPENING_BRACES stats CLOSING_BRACES
         }
 ;
 
-macrostat: macroexpr
-        {
-            $$ = macro_statement_new($1);
-        }
+exprstat: expr
+    {
+        $$ = expr_statement_new($1);
+    }
 ;
 
 expr: literal

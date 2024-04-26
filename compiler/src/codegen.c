@@ -526,20 +526,6 @@ region_t* codegen_expr(FILE* out, scope_t* scope, struct expression* expr) {
 			panic("unknown expression kind");
 			return NULL;
 	}
-} 
-
-void codegen_print_statement(FILE* out, scope_t* scope, struct print_statement statement) {
-	region_t* region = codegen_expr(out, scope, statement.value);
-	move_to(region);
-
-	output();
-	for (size_t i = 1; i < region->size; i++) {
-		next();
-        output();
-	}
-    scope->band->position += region->size - 1;
-
-	region_used(scope, region);
 }
 
 region_t* clone_region(FILE* out, scope_t* scope, region_t* original) {
@@ -610,13 +596,6 @@ void codegen_decl_statement(FILE* out, scope_t* scope, struct assignment_stateme
 	scope_existing(scope, region, statement.id);
 }
 
-void codegen_macro_statement(FILE* out, scope_t* scope, struct macro_statement statement) {
-    region_t* region = codegen_expr(out, scope, statement.expr);
-    if (region->is_temp) {
-        scope_remove(scope, region);
-    }
-}
-
 void codegen_block(FILE*, scope_t*, struct block*);
 
 void codegen_if_statement(FILE* out, scope_t* scope, struct if_statement statement) {
@@ -680,19 +659,24 @@ void codegen_while_statement(FILE* out, scope_t* scope, struct while_statement s
     scope_remove(scope, condition);
 }
 
+
+void codegen_expr_statement(FILE* out, scope_t* scope, struct expr_statement statement) {
+    region_t* region = codegen_expr(out, scope, statement.expr);
+    if (region->is_temp) {
+        scope_remove(scope, region);
+    }
+}
+
 void codegen_statement(FILE* out, scope_t* scope, struct statement* statement) {
 	switch(statement->kind) {
-		case PRINT_STATEMENT:
-			codegen_print_statement(out, scope, statement->print);
-			break;
 		case DECL_STATEMENT:
 			codegen_decl_statement(out, scope, statement->assignment);
 			break;
         case ASSIGNMENT_STATEMENT:
             codegen_assignment_statement(out, scope, statement->assignment);
             break;
-        case MACRO_STATEMENT:
-            codegen_macro_statement(out, scope, statement->macro);
+        case EXPR_STATEMENT:
+            codegen_expr_statement(out, scope, statement->expr);
             break;
         case IF_STATEMENT:
             codegen_if_statement(out, scope, statement->if_else);

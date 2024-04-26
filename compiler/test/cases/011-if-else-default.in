@@ -1,19 +1,19 @@
 if 1 {
-    print "foo\n";
+    print("foo\n");
 } else {
-    print "bar\n";
+    print("bar\n");
 }
 
 if 0 {
-    print "foobar\n";
+    print("foobar\n");
 } else {
-    print "baz\n";
+    print("baz\n");
 }
 
 if 1 {
-    print "no else\n";
+    print("no else\n");
 }
 
 if 0 {
-    print "this should not be printed\n";
+    print("this should not be printed\n");
 }

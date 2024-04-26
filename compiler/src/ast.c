@@ -27,15 +27,6 @@ void block_add_statement(struct block* block, struct statement* statement) {
 	last(block, statements) = statement;
 }
 
-struct statement* print_statement_new(struct expression* expr) {	
-	_new(stat, statement);
-	stat->kind = PRINT_STATEMENT;
-	stat->print = (struct print_statement) {
-		.value = expr,
-	};
-	return stat;
-}
-
 struct statement* declaration_statement_new(struct statement* assignment) {
     if (assignment->kind != ASSIGNMENT_STATEMENT) {
         panic("argument has to be assignment");
@@ -57,11 +48,11 @@ struct statement* assignment_statement_new(char* id, struct expression* expr) {
 	return stat;
 }
 
-struct statement* macro_statement_new(struct expression* expr) {
+struct statement* expr_statement_new(struct expression* expr) {
     _new(stat, statement);
-    stat->kind = MACRO_STATEMENT;
-    stat->macro = (struct macro_statement) {
-        .expr = expr,
+    stat->kind = EXPR_STATEMENT;
+    stat->expr = (struct expr_statement) {
+            .expr = expr,
     };
     return stat;
 }

@@ -4,34 +4,34 @@ while bottles {
     var bottles_string = to_str(bottles);
 
     if (bottles == 1) {
-        print bottles_string;
-        print " bottle of beer on the wall.\n";
-        print bottles_string;
-        print " bottle of beer.\n";
-        print "Take on down, pass it around.\n";
+        print(bottles_string);
+        print(" bottle of beer on the wall.\n");
+        print(bottles_string);
+        print(" bottle of beer.\n");
+        print("Take on down, pass it around.\n");
     } else {
-        print bottles_string;
-        print " bottles of beer on the wall.\n";
-        print bottles_string;
-        print " bottles of beer.\n";
-        print "Take on down, pass it around.\n";
+        print(bottles_string);
+        print(" bottles of beer on the wall.\n");
+        print(bottles_string);
+        print(" bottles of beer.\n");
+        print("Take on down, pass it around.\n");
     }
 
     bottles = (bottles - 1);
     bottles_string = to_str(bottles);
 
-    print bottles_string;
+    print(bottles_string);
 
     if (bottles == 1) {
-        print " bottle of beer on the wall.\n";
+        print(" bottle of beer on the wall.\n");
     } else {
-        print " bottles of beer on the wall.\n";
+        print(" bottles of beer on the wall.\n");
     }
-    print "\n";
+    print("\n");
 }
 
-print "No more bottles of beer on the wall,\n";
-print "no more bottles of beer.\n";
-print "We've taken them down\n";
-print "and passed them around;\n";
-print "now we're drunk and passed out!\n";
+print("No more bottles of beer on the wall,\n");
+print("no more bottles of beer.\n");
+print("We've taken them down\n");
+print("and passed them around;\n");
+print("now we're drunk and passed out!\n");

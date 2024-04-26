@@ -1,15 +1,15 @@
 if (0 && 0) {
-    print "no 00\n";
+    print("no 00\n");
 }
 
 if (0 && 1) {
-    print "no 01\n";
+    print("no 01\n");
 }
 
 if (1 && 0) {
-    print "no 10\n";
+    print("no 10\n");
 }
 
 if (1 && 1) {
-    print "yes 11\n";
+    print("yes 11\n");
 }

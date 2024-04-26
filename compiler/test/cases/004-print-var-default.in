@@ -1,2 +1,2 @@
 var tmp = "Hello, World!\n";
-print tmp;
+print(tmp);
