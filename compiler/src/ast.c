@@ -154,7 +154,7 @@ struct expression* builtin_call_expression_new(void) {
 }
 
 void builtin_call_expression_add_argument(struct expression* builtin_call, struct expression* argument) {
-    safe_realloc(builtin_call->builtin_call.arguments, ++builtin_call->builtin_call.argument_number * sizeof(struct expression*));
+    builtin_call->builtin_call.arguments = safe_realloc(builtin_call->builtin_call.arguments, (++builtin_call->builtin_call.argument_number) * sizeof(struct expression*));
     builtin_call->builtin_call.arguments[builtin_call->builtin_call.argument_number - 1] = argument;
 }
 

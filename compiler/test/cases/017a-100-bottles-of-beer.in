@@ -1,7 +1,7 @@
 var bottles = 100;
 
 while bottles {
-    var bottles_string = to_str$(bottles);
+    var bottles_string = to_str(bottles);
 
     if (bottles == 1) {
         print bottles_string;
@@ -18,7 +18,7 @@ while bottles {
     }
 
     bottles = (bottles - 1);
-    bottles_string = to_str$(bottles);
+    bottles_string = to_str(bottles);
 
     print bottles_string;
 

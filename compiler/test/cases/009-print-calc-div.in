@@ -1,5 +1,5 @@
 var a = 128;
 var b = 16;
 var c = (a / b);
-print to_str$(c);
+print to_str(c);
 print "\n";

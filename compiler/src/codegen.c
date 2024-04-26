@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <alloca.h>
 
 #include <error.h>
 
@@ -496,6 +497,18 @@ region_t* codegen_calc_expr(FILE* out, scope_t* scope, struct calc_expression ex
     return result;
 }
 
+region_t* codegen_builtin_expr(FILE* out, scope_t* scope, struct builtin_call_expression expr) {
+    builtin_t builtin = find_builtin(expr.id);
+
+    region_t** args = alloca(expr.argument_number * sizeof(region_t*));
+
+    for (size_t i = 0; i < expr.argument_number; i++) {
+        args[i] = codegen_expr(out, scope, expr.arguments[i]);
+    }
+
+    return builtin(out, scope, expr.argument_number, args);
+}
+
 region_t* codegen_expr(FILE* out, scope_t* scope, struct expression* expr) {
 	switch(expr->kind) {
 		case LITERAL:
@@ -504,6 +517,8 @@ region_t* codegen_expr(FILE* out, scope_t* scope, struct expression* expr) {
 			return codegen_variable_expr(out, scope, expr->variable);
         case MACRO:
             return codegen_macro_expr(out, scope, expr->macro);
+        case BUILTIN_CALL:
+            return codegen_builtin_expr(out, scope, expr->builtin_call);
         case CALCULATION:
             return codegen_calc_expr(out, scope, expr->calc);
 		default:
