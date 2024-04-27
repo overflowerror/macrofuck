@@ -36,3 +36,14 @@ extern region_t* print(FILE* out, scope_t* scope, size_t argc, region_t** argv) 
     region_t* result = scope_add_tmp(scope, 1);
     return result;
 }
+
+extern region_t* read_char(FILE* out, scope_t* scope, size_t argc, region_t** argv) {
+    if (argc != 0) {
+        panic("read_char() doesn't accept arguments");
+    }
+
+    region_t* result = scope_add_tmp(scope, 1);
+    move_to(result); input();
+
+    return result;
+}

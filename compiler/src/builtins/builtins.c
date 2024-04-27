@@ -4,15 +4,19 @@
 
 #define decl(n) region_t* n(FILE*, scope_t*, size_t, region_t**)
 
-decl(to_str);
 decl(print);
+decl(read_char);
+
+decl(to_str);
 
 static struct builtin_list_item {
     const char* name;
     builtin_t function;
 } builtins[] = {
-    {"to_str", to_str},
     {"print", print},
+    {"read_char", read_char},
+
+    {"to_str", to_str},
 };
 
 builtin_t find_builtin(const char* name) {

@@ -164,7 +164,11 @@ builtincall: ID OPENING_BRACKETS argumentlist CLOSING_BRACKETS
     }
 ;
 
-argumentlist: expr
+argumentlist: /* empty */
+                {
+                    $$ = builtin_call_expression_new();
+                }
+            | expr
                 {
                     $$ = builtin_call_expression_new();
                     builtin_call_expression_add_argument($$, $1);
