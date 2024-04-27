@@ -177,8 +177,8 @@ argumentlist: /* empty */
                 }
             | expr COMMA argumentlist
                 {
-                    $$ = $1;
-                    builtin_call_expression_add_argument($$, $3);
+                    $$ = $3;
+                    builtin_call_expression_add_argument($$, $1);
                 }
 ;
 

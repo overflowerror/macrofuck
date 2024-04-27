@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include <error.h>
 #include <alloc.h>
@@ -167,8 +168,10 @@ struct expression* builtin_call_expression_new(void) {
 }
 
 void builtin_call_expression_add_argument(struct expression* builtin_call, struct expression* argument) {
-    builtin_call->builtin_call.arguments = safe_realloc(builtin_call->builtin_call.arguments, (++builtin_call->builtin_call.argument_number) * sizeof(struct expression*));
-    builtin_call->builtin_call.arguments[builtin_call->builtin_call.argument_number - 1] = argument;
+    builtin_call->builtin_call.arguments = safe_realloc(builtin_call->builtin_call.arguments, (builtin_call->builtin_call.argument_number + 1) * sizeof(struct expression*));
+    memmove(builtin_call->builtin_call.arguments + 1, builtin_call->builtin_call.arguments, builtin_call->builtin_call.argument_number * sizeof(struct expression*));
+    builtin_call->builtin_call.arguments[0] = argument;
+    builtin_call->builtin_call.argument_number++;
 }
 
 
