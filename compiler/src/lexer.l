@@ -10,7 +10,7 @@ if      "if"
 else    "else"
 while   "while"
 
-char    "'"."'"
+char    "'"([^\\]|[\\]n|[\\]t|[\\]{2})"'"
 id		[a-zA-Z_][a-zA-Z0-9_]*
 
 %option noyywrap
@@ -33,6 +33,17 @@ id		[a-zA-Z_][a-zA-Z0-9_]*
 #include <error.h>
 
 #include "y.tab.h"
+
+char char_escape(const char* yytext) {
+    if (yytext[1] == '\\') {
+        if (yytext[2] == '\\')     return '\\';
+        else if (yytext[2] == 'n') return '\n';
+        else if (yytext[2] == 't') return '\t';
+        else lex_panic("unknown escape sequence: %s\n", yytext);
+    } else {
+        return yytext[1];
+    }
+}
 
 %}
 
@@ -106,7 +117,7 @@ strbuf_t strbuf = NULL;
 <INITIAL>{dec}		{ yylval.number = strtol(yytext, NULL, 10); return NUM; }
 <INITIAL>{oct}		{ yylval.number = strtol(yytext + 1, NULL, 8); return NUM; }
 <INITIAL>{bin}		{ yylval.number = strtol(yytext + 2, NULL, 2); return NUM; }
-<INITIAL>{char}		{ yylval.ch = yytext[1]; return CHAR; }
+<INITIAL>{char}		{ yylval.ch = char_escape(yytext); return CHAR; }
 <INITIAL>{id}		{ yylval.id = strdup(yytext); return ID; }
 <INITIAL>{whitespace}+	{ }
 
