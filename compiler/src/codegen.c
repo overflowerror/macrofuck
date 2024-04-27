@@ -532,6 +532,108 @@ region_t* codegen_less_than(FILE* out, scope_t* scope, region_t* op1, region_t* 
     return result;
 }
 
+region_t* codegen_greater_than_or_equals(FILE* out, scope_t* scope, region_t* op1, region_t* op2) {
+    if (!op1->is_temp) {
+        op1 = clone(op1);
+    }
+    if (!op2->is_temp) {
+        op2 = clone(op2);
+    }
+
+    region_t* result = scope_add_tmp(scope, 1);
+    move_to(result); reset(); inc();
+    region_t* tmp = scope_add_tmp(scope, 1);
+    region_t* op1_is_empty = scope_add_tmp(scope, 1);
+
+    move_to(op2);
+    loop({
+        dec();
+        move_to(op1_is_empty); reset(); inc();
+        move_to(tmp); reset();
+        move_to(op1);
+        loop({
+            move_to(tmp); inc();
+            move_to(op1_is_empty); reset();
+            move_to(op1); dec();
+        });
+
+        move_to(tmp);
+        loop({
+            move_to(op1); inc();
+            move_to(tmp); dec();
+        });
+
+        move_to(op1); dec();
+
+        move_to(op1_is_empty);
+        loop({
+            move_to(result); reset();
+            move_to(op2); reset();
+            move_to(op1_is_empty); dec();
+        });
+
+        move_to(op2);
+    });
+
+    scope_remove(scope, op1);
+    scope_remove(scope, op2);
+    scope_remove(scope, tmp);
+    scope_remove(scope, op1_is_empty);
+
+    return result;
+}
+
+region_t* codegen_less_than_or_equals(FILE* out, scope_t* scope, region_t* op1, region_t* op2) {
+    if (!op1->is_temp) {
+        op1 = clone(op1);
+    }
+    if (!op2->is_temp) {
+        op2 = clone(op2);
+    }
+
+    region_t* result = scope_add_tmp(scope, 1);
+    move_to(result); reset(); inc();
+    region_t* tmp = scope_add_tmp(scope, 1);
+    region_t* op2_is_empty = scope_add_tmp(scope, 1);
+
+    move_to(op1);
+    loop({
+        dec();
+        move_to(op2_is_empty); reset(); inc();
+        move_to(tmp); reset();
+        move_to(op2);
+        loop({
+            move_to(tmp); inc();
+            move_to(op2_is_empty); reset();
+            move_to(op2); dec();
+        });
+
+        move_to(tmp);
+        loop({
+            move_to(op2); inc();
+            move_to(tmp); dec();
+        });
+
+        move_to(op2); dec();
+
+        move_to(op2_is_empty);
+        loop({
+            move_to(result); reset();
+            move_to(op1); reset();
+            move_to(op2_is_empty); dec();
+        });
+
+        move_to(op1);
+    });
+
+    scope_remove(scope, op1);
+    scope_remove(scope, op2);
+    scope_remove(scope, tmp);
+    scope_remove(scope, op2_is_empty);
+
+    return result;
+}
+
 region_t* codegen_negation(FILE* out, scope_t* scope, region_t* op) {
     if (!op->is_temp) {
         op = clone(op);
@@ -584,6 +686,12 @@ region_t* codegen_calc_expr(FILE* out, scope_t* scope, struct calc_expression ex
             break;
         case LESS_THAN:
             result = codegen_less_than(out, scope, operand1, operand2);
+            break;
+        case GREATER_EQUALS:
+            result = codegen_greater_than_or_equals(out, scope, operand1, operand2);
+            break;
+        case LESS_EQUALS:
+            result = codegen_less_than_or_equals(out, scope, operand1, operand2);
             break;
         case NOT_EQUALS:
             result = codegen_not_equals(out, scope, operand1, operand2);
