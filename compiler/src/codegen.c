@@ -23,7 +23,7 @@ void _move_to(FILE* out, scope_t* scope, size_t target) {
 	}
 }
 
-void _copy(FILE* out, scope_t* scope, region_t* source, region_t* target) {
+void _copy(FILE* out, scope_t* scope, region_t* source, size_t source_offset, region_t* target, size_t target_offset) {
     size_t size = source->size;
     if (target->size < size) {
         size = target->size;
@@ -33,12 +33,12 @@ void _copy(FILE* out, scope_t* scope, region_t* source, region_t* target) {
     move_to(tmp); reset();
 
     for (size_t i = 0; i < size; i++) {
-        move_offset(source, i);
+        move_offset(source, source_offset + i);
         loop({
             dec();
-            move_offset(target, i); inc();
+            move_offset(target, target_offset + i); inc();
             move_offset(tmp, i); inc();
-            move_offset(source, i);
+            move_offset(source, source_offset + i);
         });
     }
 
@@ -46,7 +46,7 @@ void _copy(FILE* out, scope_t* scope, region_t* source, region_t* target) {
         move_offset(tmp, i);
         loop({
             dec();
-            move_offset(source, i); inc();
+            move_offset(source, source_offset + i); inc();
             move_offset(tmp, i);
         });
     }

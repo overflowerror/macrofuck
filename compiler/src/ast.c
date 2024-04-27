@@ -111,6 +111,28 @@ struct expression* literal_expression_str_new(char* s) {
 	return expr;
 }
 
+struct expression* literal_expression_array_new(size_t length, struct expression** values) {
+    if (values == NULL) {
+        values = safe_malloc(length * sizeof(struct expression*));
+        for (size_t i = 0; i < length; i++) {
+            values[i] = literal_expression_num_new(0);
+        }
+    }
+
+    _new(expr, expression);
+    expr->kind = LITERAL;
+    expr->type = UNKNOWN_TYPE;
+    expr->literal = (struct literal_expression) {
+        .kind = ARRAY_LITERAL,
+        .array = (struct array_literal) {
+            .length = length,
+            .values = values,
+        }
+    };
+
+    return expr;
+}
+
 struct expression* variable_expression_new(char* id) {
 	_new(expr, expression);
 	expr->kind = VARIABLE;

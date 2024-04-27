@@ -23,7 +23,7 @@
 #define move_to(r) move(r->start)
 #define move_offset(r, o) move(r->start + o)
 
-#define copy(s, t) _copy(out, scope, s, t)
+#define copy(s, t) _copy(out, scope, s, 0, t, 0)
 #define clone(s) _clone(out, scope, s)
 
 #define reset_region(r) _reset_region(out, scope, r)
@@ -31,7 +31,7 @@
 #define region_used(region) if (region->is_temp) { scope_remove(scope, region); }
 
 void _move_to(FILE*, scope_t*, size_t);
-void _copy(FILE*, scope_t*, region_t*, region_t*);
+void _copy(FILE*, scope_t*, region_t*, size_t, region_t*, size_t);
 region_t* _clone(FILE*, scope_t*, region_t*);
 void _reset_region(FILE*, scope_t*, region_t*);
 

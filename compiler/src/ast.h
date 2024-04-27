@@ -7,6 +7,7 @@ enum literal_kind {
 	NUMBER_LITERAL,
 	CHAR_LITERAL,
 	STRING_LITERAL,
+    ARRAY_LITERAL,
 };
 
 enum expression_kind {
@@ -32,12 +33,18 @@ enum statement_kind {
     WHILE_STATEMENT,
 };
 
+struct array_literal {
+    size_t length;
+    struct expression** values;
+};
+
 struct literal_expression {
 	enum literal_kind kind;
 	union {
 		long long number;
 		char ch;
-		char* str;	
+		char* str;
+        struct array_literal array;
 	};
 };
 
@@ -138,6 +145,7 @@ struct statement* while_statement_new(struct expression*, struct block*);
 struct expression* literal_expression_char_new(char);
 struct expression* literal_expression_str_new(char*);
 struct expression* literal_expression_num_new(long long);
+struct expression* literal_expression_array_new(size_t, struct expression**);
 struct expression* variable_expression_new(char*);
 struct expression* macro_expression_new(char*, char*);
 struct expression* builtin_call_expression_new(void);

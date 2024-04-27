@@ -41,6 +41,19 @@ static region_t* codegen_literal_expr(FILE* out, scope_t* scope, struct literal_
             }
             break;
         }
+        case ARRAY_LITERAL:
+            region = scope_add_tmp(scope, expr.array.length);
+            for (size_t i = 0; i < expr.array.length; i++) {
+                region_t* tmp = codegen_expr(out, scope, expr.array.values[i]);
+                if (tmp->size > 1) {
+                    panic("arrays can only contain scalar values");
+                }
+                _copy(out, scope, tmp, 0, region, i);
+                if (tmp->is_temp) {
+                    scope_remove(scope, tmp);
+                }
+            }
+            break;
         default:
             fprintf(stderr, "literal kind: %d\n", expr.kind);
             panic("unknown literal kind");

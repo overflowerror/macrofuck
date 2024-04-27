@@ -34,7 +34,7 @@ extern struct block* program;
 
 %type <block> stats optelse block
 %type <statement> stat definition assignment exprstat if while
-%type <expr> expr literal variable macroexpr builtincall calcexpr argumentlist
+%type <expr> expr literal variable macroexpr builtincall calcexpr argumentlist arrayliteral
 %type <op> op
 
 %token <number> NUM 
@@ -64,6 +64,8 @@ extern struct block* program;
 %token CLOSING_BRACKETS
 %token OPENING_BRACES
 %token CLOSING_BRACES
+%token OPENING_SQ_BRACKETS
+%token CLOSING_SQ_BRACKETS
 %token COMMA
 
 %token VAR
@@ -255,6 +257,20 @@ literal:  NUM
 	| STR {
 			$$ = literal_expression_str_new($1);
 		}
+	| arrayliteral
+;
+
+arrayliteral: OPENING_SQ_BRACKETS NUM CLOSING_SQ_BRACKETS
+                {
+                    $$ = literal_expression_array_new($2, NULL);
+                }
+            | OPENING_SQ_BRACKETS CLOSING_SQ_BRACKETS OPENING_BRACES argumentlist CLOSING_BRACES
+                {
+                    $$ = literal_expression_array_new(
+                        $4->builtin_call.argument_number,
+                        $4->builtin_call.arguments
+                    );
+                }
 ;
 
 variable: ID

@@ -5,7 +5,6 @@ oct		"0"[0-9]+
 hex		"0x"[0-9a-fA-F]+
 bin		"0b"[01]+
 
-print	"print"
 var		"var"
 if      "if"
 else    "else"
@@ -92,6 +91,8 @@ strbuf_t strbuf = NULL;
 <INITIAL>")"        { return CLOSING_BRACKETS; }
 <INITIAL>"{"        { return OPENING_BRACES; }
 <INITIAL>"}"        { return CLOSING_BRACES; }
+<INITIAL>"["        { return OPENING_SQ_BRACKETS; }
+<INITIAL>"]"        { return CLOSING_SQ_BRACKETS; }
 <INITIAL>","        { return COMMA; }
 
 <INITIAL>"$("       { BEGIN MACRO; strbuf_clear(strbuf); }
