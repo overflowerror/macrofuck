@@ -47,3 +47,22 @@ extern region_t* read_char(FILE* out, scope_t* scope, size_t argc, region_t** ar
 
     return result;
 }
+
+extern region_t* read(FILE* out, scope_t* scope, size_t argc, region_t** argv) {
+    if (argc == 0) {
+        // default to read_char
+        return read_char(out, scope, argc, argv);
+    }
+    if (argc != 1) {
+        panic("read() has at most one argument");
+    }
+
+    region_t* region = argv[0];
+
+    for (size_t i = 0; i < region->size; i++) {
+        move_offset(region, i); input();
+    }
+
+    return region;
+}
+

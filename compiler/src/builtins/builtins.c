@@ -6,6 +6,7 @@
 
 decl(print);
 decl(read_char);
+decl(read);
 
 decl(to_str);
 
@@ -15,6 +16,7 @@ static struct builtin_list_item {
 } builtins[] = {
     {"print", print},
     {"read_char", read_char},
+    {"read", read},
 
     {"to_str", to_str},
 };
