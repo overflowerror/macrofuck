@@ -1,6 +1,8 @@
 #ifndef CODEGEN_H
 #define CODEGEN_H
 
+#include <stdio.h>
+
 #include "ast.h"
 #include "band.h"
 #include "scope.h"
@@ -26,6 +28,8 @@
 
 #define reset_region(r) _reset_region(out, scope, r)
 
+#define region_used(region) if (region->is_temp) { scope_remove(scope, region); }
+
 void _move_to(FILE*, scope_t*, size_t);
 void _copy(FILE*, scope_t*, region_t*, region_t*);
 region_t* _clone(FILE*, scope_t*, region_t*);
@@ -33,5 +37,9 @@ void _reset_region(FILE*, scope_t*, region_t*);
 
 
 int codegen(FILE*, struct block*);
+
+region_t* codegen_expr(FILE*, scope_t*, struct expression*);
+void codegen_statement(FILE*, scope_t*, struct statement*);
+void codegen_block(FILE*, scope_t*, struct block*);
 
 #endif

@@ -12,8 +12,9 @@ MAKE     = make
 PLUGINS  =
 BUILTINS = obj/builtins/builtins.o obj/builtins/numbers.o \
            obj/builtins/print.o
-OBJS     = obj/lex.yy.o obj/y.tab.o obj/codegen.o obj/ast.o obj/band.o \
-           obj/plugins.o obj/scope.o $(PLUGINS) $(BUILTINS) obj/main.o
+OBJS     = obj/lex.yy.o obj/y.tab.o obj/codegen.o obj/codegen_expr.o \
+           obj/codegen_stat.o obj/ast.o obj/band.o obj/plugins.o obj/scope.o \
+           $(PLUGINS) $(BUILTINS) obj/main.o
 DEPS     = $(OBJS:%.o=%.d)
 
 -include $(DEPS)
