@@ -1,0 +1,6 @@
+var a = []{'a', 'b', 'c', 'd'};
+
+var b = a[1];
+var c = b[0];
+
+print(c, '\n');
