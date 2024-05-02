@@ -33,7 +33,7 @@ extern struct block* program;
 }
 
 %type <block> stats optelse block
-%type <statement> stat definition assignment exprstat if while
+%type <statement> stat definition assignment exprstat if while map
 %type <expr> expr literal variable macroexpr builtincall calcexpr argumentlist arrayliteral
 %type <op> op
 
@@ -72,6 +72,8 @@ extern struct block* program;
 %token IF
 %token ELSE
 %token WHILE
+%token MAP
+%token IN
 
 %start file
 
@@ -99,6 +101,7 @@ stat: definition SEMICOLON
 	| exprstat SEMICOLON
 	| if
 	| while
+	| map
 ;
 
 definition: VAR assignment
@@ -132,6 +135,12 @@ optelse: /* empty */
 while: WHILE expr block
         {
             $$ = while_statement_new($2, $3);
+        }
+;
+
+map: MAP OPENING_BRACKETS ID COMMA ID IN ID CLOSING_BRACKETS block
+        {
+            $$ = map_statement_new($3, $5, $7, $9);
         }
 ;
 

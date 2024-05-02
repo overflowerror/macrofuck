@@ -32,6 +32,7 @@ enum statement_kind {
     EXPR_STATEMENT,
     IF_STATEMENT,
     WHILE_STATEMENT,
+    MAP_STATEMENT,
 };
 
 struct array_literal {
@@ -117,6 +118,13 @@ struct while_statement {
     struct block* block;
 };
 
+struct map_statement {
+    char* index_id;
+    char* ref_id;
+    char* list_id;
+    struct block* block;
+};
+
 struct expr_statement {
     struct expression* expr;
 };
@@ -128,6 +136,7 @@ struct statement {
         struct expr_statement expr;
         struct if_statement if_else;
         struct while_statement while_loop;
+        struct map_statement map_loop;
 	};
 };
 
@@ -144,6 +153,7 @@ struct statement* assignment_statement_new(struct expression*, struct expression
 struct statement* expr_statement_new(struct expression*);
 struct statement* if_statement_new(struct expression*, struct block*, struct block*);
 struct statement* while_statement_new(struct expression*, struct block*);
+struct statement* map_statement_new(char*, char*, char*, struct block*);
 
 struct expression* literal_expression_char_new(char);
 struct expression* literal_expression_str_new(char*);

@@ -9,6 +9,8 @@ var		"var"
 if      "if"
 else    "else"
 while   "while"
+map     "map"
+in      "in"
 
 char    "'"([^\\]|[\\]n|[\\]t|[\\]{2})"'"
 id		[a-zA-Z_][a-zA-Z0-9_]*
@@ -79,6 +81,8 @@ strbuf_t strbuf = NULL;
 <INITIAL>{if}       { return IF; }
 <INITIAL>{else}     { return ELSE; }
 <INITIAL>{while}    { return WHILE; }
+<INITIAL>{map}      { return MAP; }
+<INITIAL>{in}       { return IN; }
 
 <INITIAL>"="		{ return ASSIGNMENT; }
 
