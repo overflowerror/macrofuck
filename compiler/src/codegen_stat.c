@@ -148,6 +148,32 @@ static void codegen_while_statement(FILE* out, scope_t* scope, struct while_stat
 }
 
 
+static void codegen_map_statement(FILE* out, scope_t* scope, struct map_statement statement) {
+    // we need a local scope for index and value
+    scope_t* local_scope = scope_new(scope);
+
+    region_t* list = scope_get(scope, statement.list_id);
+    if (!list) {
+        fprintf(stderr, "variable not found: %s\n", statement.list_id);
+        panic("variable not found");
+    }
+
+    region_t* index = scope_add(local_scope, statement.index_id, 1);
+    move_to(index); reset();
+
+    region_t* value = scope_add_ref(local_scope, list, 0, 1);
+    scope_existing(local_scope, value, statement.ref_id);
+
+    for (size_t i = 0; i < list->size; i++) {
+        codegen_block(out, local_scope, statement.block);
+        value->start++;
+        move_to(index); inc();
+    }
+
+    scope_free(local_scope);
+}
+
+
 static void codegen_expr_statement(FILE* out, scope_t* scope, struct expr_statement statement) {
     region_t* region = codegen_expr(out, scope, statement.expr);
     if (region->is_temp) {
@@ -171,6 +197,9 @@ void codegen_statement(FILE* out, scope_t* scope, struct statement* statement) {
             break;
         case WHILE_STATEMENT:
             codegen_while_statement(out, scope, statement->while_loop);
+            break;
+        case MAP_STATEMENT:
+            codegen_map_statement(out, scope, statement->map_loop);
             break;
         default:
             fprintf(stderr, "statement kind: %d\n", statement->kind);
