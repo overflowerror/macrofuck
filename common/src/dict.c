@@ -7,8 +7,8 @@
 #include "alloc.h"
 #include "list.h"
 
-int hash_string(const char* str) {
-	int result = 0;
+unsigned int hash_string(const char* str) {
+    unsigned int result = 0;
 	while (*str != '\0') {
 		result = *str + 31 * result;
 		str++;
@@ -38,7 +38,7 @@ struct dict_pair* dict_search_in_bucket(dict_bucket_t bucket, const char* key) {
 }
 
 dict_bucket_t dict_find_bucket(dict_t* dict, const char* key) {
-	int hash = hash_string(key);
+    unsigned int hash = hash_string(key);
 	return dict->buckets[hash % NUMBER_OF_BUCKETS];
 }
 
