@@ -130,6 +130,11 @@ optelse: /* empty */
         {
             $$ = $2;
         }
+    | ELSE if
+        {
+            $$ = block_new();
+            block_add_statement($$, $2);
+        }
 ;
 
 while: WHILE expr block

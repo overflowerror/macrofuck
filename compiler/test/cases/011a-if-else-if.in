@@ -1,0 +1,31 @@
+if (1) {
+    print("yes - if\n");
+} else if (1) {
+    print("no - else if\n");
+} else {
+    print("no - else\n");
+}
+
+if (1) {
+    print("yes - if\n");
+} else if (0) {
+    print("no - else if\n");
+} else {
+    print("no - else\n");
+}
+
+if (0) {
+    print("no - if\n");
+} else if (1) {
+    print("yes - else if\n");
+} else {
+    print("no - else\n");
+}
+
+if (0) {
+    print("no - if\n");
+} else if (0) {
+    print("no - else if\n");
+} else {
+    print("yes - else\n");
+}
