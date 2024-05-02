@@ -46,6 +46,14 @@ region_t* scope_add_tmp(scope_t* scope, size_t size) {
     return region;
 }
 
+region_t* scope_add_ref(scope_t* scope, region_t* parent, size_t offset, size_t size) {
+    region_t* region = band_allocate_ref(scope->band, parent);
+    region->start += offset;
+    region->size = size;
+
+    return region;
+}
+
 region_t* scope_get(scope_t* scope, const char* name) {
     region_t* region = dict_get(scope->variables, name);
 

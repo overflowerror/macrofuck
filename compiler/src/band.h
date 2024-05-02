@@ -8,12 +8,14 @@
 
 typedef size_t band_addr_t;
 
-typedef struct {
+typedef struct region {
 	band_addr_t start;
 	size_t index;
 	size_t size;
 	const char* name;
-	bool is_temp;	
+	bool is_temp;
+    size_t ref_count;
+    struct region* parent;
 } region_t;
 
 typedef struct {
@@ -28,6 +30,7 @@ region_t* band_region_for_addr(band_t*, band_addr_t);
 
 region_t* band_allocate(band_t*, size_t);
 region_t* band_allocate_tmp(band_t*, size_t);
+region_t* band_allocate_ref(band_t*, region_t*);
 
 void band_region_free(band_t*, region_t*);
 void band_region_free_raw(band_t*, band_addr_t);

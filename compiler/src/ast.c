@@ -135,11 +135,25 @@ struct expression* literal_expression_array_new(size_t length, struct expression
 }
 
 struct expression* variable_expression_new(char* id) {
+    _new(expr, expression);
+    expr->kind = VARIABLE;
+    expr->type = UNKNOWN_TYPE;
+    expr->variable = (struct variable_expression) {
+            .id = id,
+            .is_offset = false,
+            .offset = 0,
+    };
+    return expr;
+}
+
+struct expression* variable_expression_new_offset(char* id, size_t offset) {
 	_new(expr, expression);
 	expr->kind = VARIABLE;
 	expr->type = UNKNOWN_TYPE;
 	expr->variable = (struct variable_expression) {
 		.id = id,
+        .is_offset = true,
+        .offset = offset,
 	};
 	return expr;
 }

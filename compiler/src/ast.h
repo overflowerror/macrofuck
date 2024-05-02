@@ -2,6 +2,7 @@
 #define AST_H
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 enum literal_kind {
 	NUMBER_LITERAL,
@@ -50,6 +51,8 @@ struct literal_expression {
 
 struct variable_expression {
 	char* id;
+    bool is_offset;
+    size_t offset;
 };
 
 struct macro_expression {
@@ -147,6 +150,7 @@ struct expression* literal_expression_str_new(char*);
 struct expression* literal_expression_num_new(long long);
 struct expression* literal_expression_array_new(size_t, struct expression**);
 struct expression* variable_expression_new(char*);
+struct expression* variable_expression_new_offset(char*, size_t);
 struct expression* macro_expression_new(char*, char*);
 struct expression* builtin_call_expression_new(void);
 void builtin_call_expression_add_argument(struct expression*, struct expression*);

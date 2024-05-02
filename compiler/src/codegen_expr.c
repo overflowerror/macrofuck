@@ -67,6 +67,16 @@ static region_t* codegen_variable_expr(FILE* _, scope_t* scope, struct variable_
         fprintf(stderr, "unknown variable: %s\n", expr.id);
         exit(1);
     }
+
+    if (expr.is_offset) {
+        if (expr.offset >= region->size) {
+            fprintf(stderr, "index out of bounds (%zu >= %zu)\n", expr.offset, region->size);
+            exit(1);
+        }
+
+        region = scope_add_ref(scope, region, expr.offset, 1);
+    }
+
     return region;
 }
 

@@ -17,6 +17,7 @@ scope_t* scope_new(scope_t*);
 region_t* scope_add(scope_t*, const char*, size_t);
 region_t* scope_existing(scope_t*, region_t*, const char*);
 region_t* scope_add_tmp(scope_t*, size_t);
+region_t* scope_add_ref(scope_t*, region_t*, size_t, size_t);
 
 region_t* scope_get(scope_t*, const char*);
 

@@ -60,12 +60,20 @@ size_t band_find_empty_region_index(band_t* band) {
 
 region_t* band_allocate_region(band_t* band, size_t size) {
 	region_t* region = safe_malloc(sizeof(region_t));
-	band_addr_t addr = band_find_gap(band, size);
-	size_t regions_index = band_find_empty_region_index(band);
+    size_t regions_index = band_find_empty_region_index(band);
+
+	band_addr_t addr;
+    if (size != 0) {
+        addr = band_find_gap(band, size);
+    } else {
+        addr = 0;
+    }
 
 	region->start = addr;
 	region->size = size;
 	region->index = regions_index;
+    region->ref_count = 1;
+    region->parent = NULL;
 
 	band->regions[regions_index] = region;
 	for (size_t i = 0; i < size; i++) {
@@ -91,13 +99,38 @@ region_t* band_allocate_tmp(band_t* band, size_t size) {
 	return region;
 }
 
-void band_region_free(band_t* band, region_t* region) {
-	band->regions[region->index] = NULL;
-	for (size_t i = 0; i < region->size; i++) {
-		band->band[region->start + i] = NULL;
-	}
+region_t* band_allocate_ref(band_t* band, region_t* parent) {
+    region_t* region = band_allocate_region(band, 0);
+    region->name = NULL;
+    region->is_temp = true;
 
-	free(region);
+    parent->ref_count++;
+    region->parent = parent;
+
+    region->size = parent->size;
+    region->start = parent->start;
+
+    return region;
+}
+
+void band_region_free(band_t* band, region_t* region) {
+    region->ref_count--;
+
+    if (region->ref_count == 0) {
+        if (region->parent == NULL) {
+            band->regions[region->index] = NULL;
+            for (size_t i = 0; i < region->size; i++) {
+                band->band[region->start + i] = NULL;
+            }
+
+            free(region);
+        } else {
+            band_region_free(band, region->parent);
+
+            band->regions[region->index] = NULL;
+            free(region);
+        }
+    }
 }
 
 void band_region_free_raw(band_t* band, band_addr_t addr) {

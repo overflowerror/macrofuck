@@ -260,6 +260,16 @@ literal:  NUM
 	| arrayliteral
 ;
 
+variable: ID
+		{
+			$$ = variable_expression_new($1);
+		}
+    | ID OPENING_SQ_BRACKETS NUM CLOSING_SQ_BRACKETS
+        {
+            $$ = variable_expression_new_offset($1, $3);
+        }
+;
+
 arrayliteral: OPENING_SQ_BRACKETS NUM CLOSING_SQ_BRACKETS
                 {
                     $$ = literal_expression_array_new($2, NULL);
@@ -271,12 +281,6 @@ arrayliteral: OPENING_SQ_BRACKETS NUM CLOSING_SQ_BRACKETS
                         $4->builtin_call.arguments
                     );
                 }
-;
-
-variable: ID
-		{
-			$$ = variable_expression_new($1);
-		}
 ;
 
 macroexpr: ID MACRO_CONTENT
