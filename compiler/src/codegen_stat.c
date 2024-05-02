@@ -12,19 +12,25 @@
 
 
 static void codegen_assignment_statement(FILE* out, scope_t* scope, struct assignment_statement statement) {
-    region_t* region = codegen_expr(out, scope, statement.value);
-    region_t* var = scope_get(scope, statement.id);
-    if (!var) {
-        fprintf(stderr, "variable not found: %s\n", statement.id);
-        panic("unknown variable");
+    region_t* value = codegen_expr(out, scope, statement.value);
+    region_t* var = codegen_expr(out, scope, statement.variable);
+
+    if (statement.variable->kind != VARIABLE) {
+        fprintf(stderr, "assigment lhs is not a variable (%d)\n", statement.variable->kind);
+        panic("not a variable");
     }
 
-    if (var->start != region->start) {
+    if (var->start != value->start) {
         reset_region(var);
-        copy(region, var);
+        copy(value, var);
     }
 
-    region_used(region);
+    region_used(value);
+
+    if (statement.variable->variable.is_offset) {
+        // lhs is offset -> free ref
+        scope_remove(scope, var);
+    }
 }
 
 // only used by decl_statement
@@ -61,8 +67,13 @@ static region_t* clone_region(FILE* out, scope_t* scope, region_t* original) {
 }
 
 static void codegen_decl_statement(FILE* out, scope_t* scope, struct assignment_statement statement) {
-    if (scope_get(scope, statement.id)) {
-        fprintf(stderr, "variable exists: %s\n", statement.id);
+    if (statement.variable->kind != VARIABLE || statement.variable->variable.is_offset) {
+        fprintf(stderr, "decl lhs is not a variable (%d)\n", statement.variable->kind);
+        panic("not a variable");
+    }
+
+    if (scope_get(scope, statement.variable->variable.id)) {
+        fprintf(stderr, "variable exists: %s\n", statement.variable->variable.id);
         panic("variable exists");
     }
 
@@ -72,7 +83,7 @@ static void codegen_decl_statement(FILE* out, scope_t* scope, struct assignment_
         region = clone_region(out, scope, region);
     }
 
-    scope_existing(scope, region, statement.id);
+    scope_existing(scope, region, statement.variable->variable.id);
 }
 
 static void codegen_if_statement(FILE* out, scope_t* scope, struct if_statement statement) {

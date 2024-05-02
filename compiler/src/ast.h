@@ -102,7 +102,7 @@ struct expression {
 };
 
 struct assignment_statement {
-    char* id;
+    struct expression* variable;
     struct expression* value;
 };
 
@@ -140,7 +140,7 @@ struct block* block_new(void);
 void block_add_statement(struct block*, struct statement*);
 
 struct statement* declaration_statement_new(struct statement*);
-struct statement* assignment_statement_new(char*, struct expression*);
+struct statement* assignment_statement_new(struct expression*, struct expression*);
 struct statement* expr_statement_new(struct expression*);
 struct statement* if_statement_new(struct expression*, struct block*, struct block*);
 struct statement* while_statement_new(struct expression*, struct block*);

@@ -107,7 +107,7 @@ definition: VAR assignment
 		}
 ;
 
-assignment: ID ASSIGNMENT expr
+assignment: variable ASSIGNMENT expr
 		{
 			$$ = assignment_statement_new($1, $3);
 		}

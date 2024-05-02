@@ -39,11 +39,11 @@ struct statement* declaration_statement_new(struct statement* assignment) {
 }
 
 
-struct statement* assignment_statement_new(char* id, struct expression* expr) {
+struct statement* assignment_statement_new(struct expression* variable, struct expression* expr) {
 	_new(stat, statement);
 	stat->kind = ASSIGNMENT_STATEMENT;
 	stat->assignment = (struct assignment_statement) {
-		.id = id,
+		.variable = variable,
 		.value = expr,
 	};
 	return stat;

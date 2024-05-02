@@ -1,0 +1,4 @@
+var foo = "Hello, vorld!\n";
+foo[7] = 'W';
+
+print(foo);
