@@ -1,0 +1,7 @@
+var list = []{'e', 'n', 'n'};
+
+rmap(_, value in list) {
+    value = (value + 1);
+}
+
+print(list, '\n');

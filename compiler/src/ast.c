@@ -79,7 +79,7 @@ struct statement* while_statement_new(struct expression* condition, struct block
     return stat;
 }
 
-struct statement* map_statement_new(char* index_id, char* ref_id, char* list_id, struct block* block) {
+struct statement* map_statement_new(char* index_id, char* ref_id, char* list_id, struct block* block, bool reverse) {
     _new(stat, statement);
     stat->kind = MAP_STATEMENT;
     stat->map_loop = (struct map_statement) {
@@ -87,6 +87,7 @@ struct statement* map_statement_new(char* index_id, char* ref_id, char* list_id,
             .ref_id = ref_id,
             .list_id = list_id,
             .block = block,
+            .reverse = reverse,
     };
     return stat;
 }

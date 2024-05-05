@@ -10,6 +10,7 @@ if      "if"
 else    "else"
 while   "while"
 map     "map"
+rmap    "rmap"
 in      "in"
 
 char    "'"([^\\]|[\\]n|[\\]t|[\\]{2})"'"
@@ -82,6 +83,7 @@ strbuf_t strbuf = NULL;
 <INITIAL>{else}     { return ELSE; }
 <INITIAL>{while}    { return WHILE; }
 <INITIAL>{map}      { return MAP; }
+<INITIAL>{rmap}     { return RMAP; }
 <INITIAL>{in}       { return IN; }
 
 <INITIAL>"="		{ return ASSIGNMENT; }

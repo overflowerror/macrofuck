@@ -1,0 +1,6 @@
+var list = []{'f', 'o', 'o', 'b', 'a', 'r'};
+
+rmap(_, value in list) {
+    print(value);
+    print('\n');
+}

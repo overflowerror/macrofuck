@@ -164,10 +164,22 @@ static void codegen_map_statement(FILE* out, scope_t* scope, struct map_statemen
     region_t* value = scope_add_ref(local_scope, list, 0, 1);
     scope_existing(local_scope, value, statement.ref_id);
 
-    for (size_t i = 0; i < list->size; i++) {
-        codegen_block(out, local_scope, statement.block);
-        value->start++;
-        move_to(index); inc();
+    if (statement.reverse) {
+        move_to(index); add(list->size - 1);
+        value->start += list->size - 1;
+        for (long long i = list->size - 1; i >= 0; i--) {
+            codegen_block(out, local_scope, statement.block);
+            value->start--;
+            move_to(index);
+            dec();
+        }
+    } else {
+        for (size_t i = 0; i < list->size; i++) {
+            codegen_block(out, local_scope, statement.block);
+            value->start++;
+            move_to(index);
+            inc();
+        }
     }
 
     scope_free(local_scope);

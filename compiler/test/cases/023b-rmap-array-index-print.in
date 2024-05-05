@@ -1,0 +1,5 @@
+var list = []{0, 0, 0, 0};
+
+rmap(index, _ in list) {
+    print(to_str(index), '\n');
+}

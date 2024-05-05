@@ -123,6 +123,7 @@ struct map_statement {
     char* ref_id;
     char* list_id;
     struct block* block;
+    bool reverse;
 };
 
 struct expr_statement {
@@ -153,7 +154,7 @@ struct statement* assignment_statement_new(struct expression*, struct expression
 struct statement* expr_statement_new(struct expression*);
 struct statement* if_statement_new(struct expression*, struct block*, struct block*);
 struct statement* while_statement_new(struct expression*, struct block*);
-struct statement* map_statement_new(char*, char*, char*, struct block*);
+struct statement* map_statement_new(char*, char*, char*, struct block*, bool);
 
 struct expression* literal_expression_char_new(char);
 struct expression* literal_expression_str_new(char*);

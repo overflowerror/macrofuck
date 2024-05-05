@@ -73,6 +73,7 @@ extern struct block* program;
 %token ELSE
 %token WHILE
 %token MAP
+%token RMAP
 %token IN
 
 %start file
@@ -145,7 +146,11 @@ while: WHILE expr block
 
 map: MAP OPENING_BRACKETS ID COMMA ID IN ID CLOSING_BRACKETS block
         {
-            $$ = map_statement_new($3, $5, $7, $9);
+            $$ = map_statement_new($3, $5, $7, $9, false);
+        }
+    | RMAP OPENING_BRACKETS ID COMMA ID IN ID CLOSING_BRACKETS block
+        {
+          $$ = map_statement_new($3, $5, $7, $9, true);
         }
 ;
 
