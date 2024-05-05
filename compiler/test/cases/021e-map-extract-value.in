@@ -1,0 +1,11 @@
+var a = []{'a', 'b', 'c'};
+
+var extract = 0;
+
+map(i, v in a) {
+    if (i == 1) {
+        extract = v;
+    }
+}
+
+print(extract, '\n');
