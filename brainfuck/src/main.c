@@ -7,7 +7,7 @@
 char band[BAND_LENGTH];
 long long position = 0; // signed
 
-void init_band() {
+void init_band(void) {
     memset(band, 0, BAND_LENGTH);
 }
 
@@ -152,6 +152,8 @@ int main(int argc, char** argv) {
     if (strcmp(argv[1], "-") != 0) {
         input = fopen(argv[1], "r");
     }
+
+    setvbuf(stdout, NULL, _IONBF, 0);
 
     init_band();
 
