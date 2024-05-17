@@ -8,6 +8,13 @@ strbuf_t strbuf_new(void) {
     return buffer;
 }
 
+strbuf_t strbuf_from(const char* str) {
+    strbuf_t buffer = strbuf_new();
+    strbuf_append(buffer, str);
+    return buffer;
+}
+
+
 strbuf_t _strbuf_replace(strbuf_t buffer, char* needle, char* replace) {
     size_t offset = 0;
 

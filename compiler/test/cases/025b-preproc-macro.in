@@ -1,0 +1,5 @@
+#macro greet(name) {
+    print("Hello, ", $name, "!\n")
+}
+
+greet$("World");

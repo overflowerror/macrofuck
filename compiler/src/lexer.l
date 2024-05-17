@@ -17,6 +17,7 @@ char    "'"([^\\]|[\\]n|[\\]t|[\\]{2})"'"
 id		[a-zA-Z_][a-zA-Z0-9_]*
 
 include "#include"
+macro   "#macro"
 
 %option noyywrap
 %option nodefault
@@ -26,7 +27,9 @@ include "#include"
 
 %x COMMENT
 %x STRING
-%x MACRO
+%x MACRO_DEF
+%x MACRO_VAL
+%x MACRO_ARGS
 
 %{
 
@@ -45,6 +48,11 @@ extern void push_file_to_yy_stack(FILE* file) {
     yypush_buffer_state(state);
 }
 
+extern void push_str_to_yy_stack(const char* str) {
+    yypush_buffer_state(YY_CURRENT_BUFFER);
+    yy_scan_string(str);
+}
+
 char char_escape(const char* yytext) {
     if (yytext[1] == '\\') {
         if (yytext[2] == '\\')     return '\\';
@@ -56,13 +64,14 @@ char char_escape(const char* yytext) {
     }
 }
 
+strbuf_t strbuf = NULL;
+int nested_braces = 0;
+
 %}
 
 %%
 
 %{
-
-strbuf_t strbuf = NULL;
 
 %}
 
@@ -75,6 +84,33 @@ strbuf_t strbuf = NULL;
 <INITIAL>"//"[^\n]*    { /* single line comment */ }
 
 <INITIAL>{include}  { return PRE_INCLUDE; }
+<INITIAL>{macro}    { BEGIN MACRO_DEF; return PRE_MACRO; }
+<MACRO_DEF>{id}     { yylval.id = strdup(yytext); return ID; }
+<MACRO_DEF>"("      { return OPENING_BRACKETS; }
+<MACRO_DEF>")"      { return CLOSING_BRACKETS; }
+<MACRO_DEF>","      { return COMMA; }
+<MACRO_DEF>{whitespace}+	{ }
+<MACRO_DEF>"{"      { BEGIN MACRO_VAL; nested_braces = 0; strbuf_clear(strbuf); }
+<MACRO_DEF>.        { lex_panic("unknown token: %s\n", yytext); }
+<MACRO_VAL>"{"      { nested_braces++; strbuf_append_c(strbuf, yytext[0]); }
+<MACRO_VAL>"}"      {
+                        if (nested_braces-- == 0) {
+                            BEGIN INITIAL;
+                            yylval.str = strdup(strbuf);
+                            return MACRO_CONTENT;
+                        } else {
+                            strbuf_append_c(strbuf, yytext[0]);
+                        }
+                    }
+<MACRO_VAL>{whitespace}+ { strbuf_append(strbuf, yytext); }
+<MACRO_VAL>.        { strbuf_append_c(strbuf, yytext[0]); }
+
+<INITIAL>{id}"$("   { strbuf_clear(strbuf); yylval.id = strdup(yytext); BEGIN MACRO_ARGS; return MACRO_CALL; }
+<MACRO_ARGS>[^\\)]* { strbuf_append(strbuf, yytext); }
+<MACRO_ARGS>"\\)"   { strbuf_append_c(strbuf, yytext[1]); }
+<MACRO_ARGS>"\\("	{ strbuf_append_c(strbuf, yytext[1]); }
+<MACRO_ARGS>"\\"    { strbuf_append(strbuf, yytext); }
+<MACRO_ARGS>")"     { yylval.str = strdup(strbuf); BEGIN INITIAL; return MACRO_CONTENT; }
 
 <INITIAL>";"		{ return SEMICOLON; }
 
@@ -121,13 +157,6 @@ strbuf_t strbuf = NULL;
 <INITIAL>"["        { return OPENING_SQ_BRACKETS; }
 <INITIAL>"]"        { return CLOSING_SQ_BRACKETS; }
 <INITIAL>","        { return COMMA; }
-
-<INITIAL>"$("       { BEGIN MACRO; strbuf_clear(strbuf); }
-<MACRO>[^\\)]*      { strbuf_append(strbuf, yytext); }
-<MACRO>"\\)"        { strbuf_append_c(strbuf, yytext[1]); }
-<MACRO>"\\("		{ strbuf_append_c(strbuf, yytext[1]); }
-<MACRO>"\\"         { strbuf_append(strbuf, yytext); }
-<MACRO>")"          { yylval.str = strdup(strbuf); BEGIN INITIAL; return MACRO_CONTENT; }
 
 <INITIAL>{hex}		{ yylval.number = strtol(yytext + 2, NULL, 16); return NUM; }
 <INITIAL>{dec}		{ yylval.number = strtol(yytext, NULL, 10); return NUM; }

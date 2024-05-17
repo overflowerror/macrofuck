@@ -36,14 +36,13 @@ extern struct block* program;
 
 %type <block> stats optelse block
 %type <statement> stat definition assignment exprstat if while map
-%type <expr> expr literal variable macroexpr builtincall noncalcexpr argumentlist arrayliteral
+%type <expr> expr literal variable builtincall noncalcexpr argumentlist arrayliteral
 %type <expr> calcexpr1 calcexpr2 calcexpr3 calcexpr4 calcexpr5 calcexpr6 calcexpr7 calcexpr8
 
 %token <number> NUM 
 %token <ch> CHAR
 %token <str> STR
 %token <id> ID
-%token <str> MACRO_CONTENT
 
 %token SEMICOLON
 %token ASSIGNMENT
@@ -79,6 +78,9 @@ extern struct block* program;
 %token IN
 
 %token PRE_INCLUDE
+%token PRE_MACRO
+%token MACRO_CALL
+%token MACRO_CONTENT
 
 %start file
 
@@ -280,7 +282,6 @@ expr: noncalcexpr
 
 noncalcexpr: literal
     | variable
-    | macroexpr
     | builtincall
 	| OPENING_BRACKETS expr CLOSING_BRACKETS
 	    {
@@ -323,12 +324,6 @@ arrayliteral: OPENING_SQ_BRACKETS NUM CLOSING_SQ_BRACKETS
                         $4->builtin_call.arguments
                     );
                 }
-;
-
-macroexpr: ID MACRO_CONTENT
-        {
-            $$ = macro_expression_new($1, $2);
-        }
 ;
 
 %%

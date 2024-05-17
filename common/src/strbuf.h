@@ -34,6 +34,7 @@ typedef char* strbuf_t;
 }
 
 strbuf_t strbuf_new(void);
+strbuf_t strbuf_from(const char*);
 strbuf_t _strbuf_replace(strbuf_t, char*, char*);
 
 #define strbuf_free(b) list_free(b)
