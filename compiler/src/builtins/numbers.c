@@ -122,5 +122,9 @@ extern region_t* to_str(FILE* out, scope_t* scope, size_t argc, region_t** argv)
     scope_remove(scope, ten);
     scope_remove(scope, copy);
 
+    if (arg->is_temp) {
+        scope_remove(scope, arg);
+    }
+
     return str;
 }
