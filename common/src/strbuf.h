@@ -7,11 +7,9 @@
 
 typedef char* strbuf_t;
 
-#define strbuf_new() list_new(char)
 #define strbuf_clear(b) { \
 	if (b == NULL) { \
 		b = strbuf_new(); \
-        list_add(b, '\0'); \
 	} else { \
 		list_header(b)->length = 1; \
 		b[0] = '\0'; \
@@ -30,5 +28,14 @@ typedef char* strbuf_t;
     b[list_size(b)] = '\0'; \
     list_header(b)->length += 1; \
 }
+
+#define strbuf_replace(b, n, r) { \
+    (b) = _strbuf_replace(b, n, r); \
+}
+
+strbuf_t strbuf_new(void);
+strbuf_t _strbuf_replace(strbuf_t, char*, char*);
+
+#define strbuf_free(b) list_free(b)
 
 #endif

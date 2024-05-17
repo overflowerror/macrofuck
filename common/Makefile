@@ -6,7 +6,7 @@ AR       = ar
 ARFLAGS  = rcs
 
 
-OBJS     = obj/alloc.o obj/dict.o obj/error.o obj/list.o
+OBJS     = obj/alloc.o obj/dict.o obj/error.o obj/list.o obj/strbuf.o
 DEPS     = $(OBJS:%.o=%.d)
 
 -include $(DEPS)
