@@ -1,5 +1,5 @@
 var list = []{0, 0, 0, 0};
 
-map(index, _ in list) {
+map index, _ in list {
     print(to_str(index), '\n');
 }

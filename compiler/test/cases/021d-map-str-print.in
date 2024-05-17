@@ -1,6 +1,6 @@
 var s = "hello, world!\n";
 
-map(_, c in s) {
+map _, c in s {
     if ((c >= 'a') && (c <= 'z')) {
         c = ((c - 'a') + 'A');
     }

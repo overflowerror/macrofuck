@@ -1,6 +1,6 @@
 var list = []{'e', 'n', 'n'};
 
-map(_, value in list) {
+map _, value in list {
     value = (value + 1);
 }
 

@@ -144,15 +144,16 @@ while: WHILE expr block
         }
 ;
 
-map: MAP OPENING_BRACKETS ID COMMA ID IN ID CLOSING_BRACKETS block
+map: MAP ID COMMA ID IN ID block
         {
-            $$ = map_statement_new($3, $5, $7, $9, false);
+            $$ = map_statement_new($2, $4, $6, $7, false);
         }
-    | RMAP OPENING_BRACKETS ID COMMA ID IN ID CLOSING_BRACKETS block
+    | RMAP ID COMMA ID IN ID block
         {
-          $$ = map_statement_new($3, $5, $7, $9, true);
+          $$ = map_statement_new($2, $4, $6, $7, true);
         }
 ;
+
 
 
 block: OPENING_BRACES stats CLOSING_BRACES
