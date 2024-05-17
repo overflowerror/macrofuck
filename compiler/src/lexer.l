@@ -64,7 +64,7 @@ strbuf_t strbuf = NULL;
 <COMMENT>\n	           { }
 <COMMENT>"*"[^*\/\n]*  { }
 
-<INITIAL>"//"[^\n]\n   { /* single line comment */ }
+<INITIAL>"//"[^\n]*    { /* single line comment */ }
 
 <INITIAL>";"		{ return SEMICOLON; }
 
