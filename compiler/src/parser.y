@@ -34,8 +34,8 @@ extern struct block* program;
 
 %type <block> stats optelse block
 %type <statement> stat definition assignment exprstat if while map
-%type <expr> expr literal variable macroexpr builtincall calcexpr argumentlist arrayliteral
-%type <op> op
+%type <expr> expr literal variable macroexpr builtincall noncalcexpr argumentlist arrayliteral
+%type <expr> calcexpr1 calcexpr2 calcexpr3 calcexpr4 calcexpr5 calcexpr6 calcexpr7 calcexpr8
 
 %token <number> NUM 
 %token <ch> CHAR
@@ -167,17 +167,6 @@ exprstat: expr
     }
 ;
 
-expr: literal
-	| variable
-	| macroexpr
-	| builtincall
-	| OPENING_BRACKETS expr CLOSING_BRACKETS
-	    {
-	        $$ = $2;
-	    }
-	| calcexpr
-;
-
 builtincall: ID OPENING_BRACKETS argumentlist CLOSING_BRACKETS
     {
         $$ = $3;
@@ -201,68 +190,97 @@ argumentlist: /* empty */
                 }
 ;
 
-calcexpr: OPENING_BRACKETS expr op expr CLOSING_BRACKETS
+calcexpr1: calcexpr2
+    | calcexpr1 OR calcexpr2
         {
-            $$ = calc_expression_new($2, $4, $3);
+            $$ = calc_expression_new($1, $3, DISJUNCTION);
         }
-    | NOT expr
+;
+
+calcexpr2: calcexpr3
+    | calcexpr2 AND calcexpr3
+        {
+            $$ = calc_expression_new($1, $3, CONJUNCTION);
+        }
+;
+
+calcexpr3: calcexpr4
+    | calcexpr3 EQUAL calcexpr4
+        {
+            $$ = calc_expression_new($1, $3, EQUALS);
+        }
+    | calcexpr3 NOT_EQUAL calcexpr4
+        {
+            $$ = calc_expression_new($1, $3, NOT_EQUALS);
+        }
+;
+
+calcexpr4: calcexpr5
+    | calcexpr4 LESS calcexpr5
+        {
+            $$ = calc_expression_new($1, $3, LESS_THAN);
+        }
+    | calcexpr4 GREATER calcexpr5
+        {
+            $$ = calc_expression_new($1, $3, GREATER_THAN);
+        }
+    | calcexpr4 LESS_EQUAL calcexpr5
+        {
+            $$ = calc_expression_new($1, $3, LESS_EQUALS);
+        }
+    | calcexpr4 GREATER_EQUAL calcexpr5
+        {
+            $$ = calc_expression_new($1, $3, GREATER_EQUALS);
+        }
+;
+
+calcexpr5: calcexpr6
+    | calcexpr5 PLUS calcexpr6
+        {
+            $$ = calc_expression_new($1, $3, ADDITION);
+        }
+    | calcexpr5 MINUS calcexpr6
+        {
+            $$ = calc_expression_new($1, $3, SUBTRACTION);
+        }
+;
+
+calcexpr6: calcexpr7
+    | calcexpr6 TIMES calcexpr7
+        {
+            $$ = calc_expression_new($1, $3, MULTIPLICATION);
+        }
+    | calcexpr6 DIVIDE calcexpr7
+        {
+            $$ = calc_expression_new($1, $3, DIVISION);
+        }
+    | calcexpr6 MOD calcexpr7
+        {
+            $$ = calc_expression_new($1, $3, MODULO);
+        }
+;
+
+calcexpr7: calcexpr8
+    | NOT calcexpr7
         {
             $$ = calc_expression_new($2, NULL, NEGATION);
         }
 ;
 
-op: PLUS
-        {
-            $$ = ADDITION;
-        }
-    | MINUS
-        {
-            $$ = SUBTRACTION;
-        }
-    | TIMES
-        {
-            $$ = MULTIPLICATION;
-        }
-    | DIVIDE
-        {
-            $$ = DIVISION;
-        }
-    | MOD
-        {
-            $$ = MODULO;
-        }
-    | EQUAL
-        {
-            $$ = EQUALS;
-        }
-    | NOT_EQUAL
-        {
-            $$ = NOT_EQUALS;
-        }
-    | GREATER
-        {
-           $$ = GREATER_THAN;
-        }
-    | LESS
-        {
-           $$ = LESS_THAN;
-        }
-    | GREATER_EQUAL
-        {
-           $$ = GREATER_EQUALS;
-        }
-    | LESS_EQUAL
-        {
-           $$ = LESS_EQUALS;
-        }
-    | AND
-        {
-            $$ = CONJUNCTION;
-        }
-    | OR
-        {
-            $$ = DISJUNCTION;
-        }
+calcexpr8: noncalcexpr;
+
+expr: noncalcexpr
+    | calcexpr1
+;
+
+noncalcexpr: literal
+    | variable
+    | macroexpr
+    | builtincall
+	| OPENING_BRACKETS expr CLOSING_BRACKETS
+	    {
+	        $$ = $2;
+	    }
 ;
 
 literal:  NUM

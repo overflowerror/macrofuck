@@ -1,0 +1,35 @@
+if 1 || 0 && 1 {
+    print("yes 1\n");
+} else {
+    print("no 1\n");
+}
+
+if 1 && 0 && 1 {
+    print("no 2\n");
+} else {
+    print("yes 2\n");
+}
+
+if 1 && (0 || 1) {
+    print("yes 3\n");
+} else {
+    print("no 3\n");
+}
+
+if 1 && (0 || 1) {
+    print("yes 4\n");
+} else {
+    print("no 4\n");
+}
+
+if !1 || 1 {
+    print("yes 5\n");
+} else {
+    print("no 5\n");
+}
+
+if !(1 || 1)  {
+    print("no 6\n");
+} else {
+    print("yes 6\n");
+}
