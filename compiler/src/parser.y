@@ -12,7 +12,9 @@
 
 #include "ast.h"
 
+#define yylex preproc_lex
 int yylex(void);
+
 void yyerror(const char*);
 
 extern struct block* program;
@@ -75,6 +77,8 @@ extern struct block* program;
 %token MAP
 %token RMAP
 %token IN
+
+%token PRE_INCLUDE
 
 %start file
 

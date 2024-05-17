@@ -16,6 +16,8 @@ in      "in"
 char    "'"([^\\]|[\\]n|[\\]t|[\\]{2})"'"
 id		[a-zA-Z_][a-zA-Z0-9_]*
 
+include "#include"
+
 %option noyywrap
 %option nodefault
 %option nounput
@@ -29,6 +31,7 @@ id		[a-zA-Z_][a-zA-Z0-9_]*
 %{
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 
@@ -36,6 +39,11 @@ id		[a-zA-Z_][a-zA-Z0-9_]*
 #include <error.h>
 
 #include "y.tab.h"
+
+extern void push_file_to_yy_stack(FILE* file) {
+    YY_BUFFER_STATE state = yy_create_buffer(file, YY_BUF_SIZE);
+    yypush_buffer_state(state);
+}
 
 char char_escape(const char* yytext) {
     if (yytext[1] == '\\') {
@@ -65,6 +73,8 @@ strbuf_t strbuf = NULL;
 <COMMENT>"*"[^*\/\n]*  { }
 
 <INITIAL>"//"[^\n]*    { /* single line comment */ }
+
+<INITIAL>{include}  { return PRE_INCLUDE; }
 
 <INITIAL>";"		{ return SEMICOLON; }
 
@@ -126,5 +136,12 @@ strbuf_t strbuf = NULL;
 <INITIAL>{char}		{ yylval.ch = char_escape(yytext); return CHAR; }
 <INITIAL>{id}		{ yylval.id = strdup(yytext); return ID; }
 <INITIAL>{whitespace}+	{ }
+
+<<EOF>>             {
+                        yypop_buffer_state();
+                        if (!YY_CURRENT_BUFFER) {
+                            yyterminate();
+                        }
+                    }
 
 <INITIAL>.		    { lex_panic("unknown token: %s\n", yytext); }

@@ -1,0 +1,3 @@
+#include "025a-preproc-include.include"
+
+print(" World!\n");
