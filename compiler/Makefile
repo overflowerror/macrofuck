@@ -14,6 +14,7 @@ BUILTINS = obj/builtins/builtins.o obj/builtins/numbers.o \
            obj/builtins/io.o
 OBJS     = obj/lex.yy.o obj/y.tab.o obj/codegen.o obj/codegen_expr.o \
            obj/codegen_stat.o obj/ast.o obj/band.o obj/plugins.o obj/scope.o \
+           obj/preprocessor.o \
            $(PLUGINS) $(BUILTINS) obj/main.o
 DEPS     = $(OBJS:%.o=%.d)
 

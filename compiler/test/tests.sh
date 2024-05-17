@@ -1,6 +1,8 @@
 #/bin/sh
 
-executable="$1"
+executable="$(realpath "$1")"
+
+cd "$(dirname "$0")"/cases/
 
 tmpfile="/tmp/$$.tmp"
 resultsfile="/tmp/$$.results"
@@ -26,7 +28,7 @@ run_testcase() {
 	rm "$tmpfile";
 }
 
-ls cases/*.in test/cases/*.in | sed -E 's/.in$//g' |  while read test; do
+ls *.in | sed -E 's/.in$//g' |  while read test; do
 	run_testcase "$test"
 done
 
