@@ -27,12 +27,14 @@ strbuf_t _strbuf_replace(strbuf_t buffer, char* needle, char* replace) {
         if (replace_length == needle_length) {
             memcpy(result, replace, replace_length);
         } else if (replace_length > needle_length) {
-            list_ensure_space(buffer, 1, replace_length - needle_length);
-            memmove(result + replace_length, result + needle_length, strlen(buffer) - offset - needle_length + 1);
-            memcpy(result, replace, replace_length);
+            buffer = list_ensure_space(buffer, 1, replace_length - needle_length);
+            memmove(buffer + offset + replace_length, buffer + offset + needle_length, strlen(buffer) - offset - needle_length + 1);
+            memcpy(buffer + offset, replace, replace_length);
+            list_header(buffer)->length += (replace_length - needle_length);
         } else {
             memcpy(result, replace, replace_length);
             memmove(result + replace_length, result + needle_length, strlen(buffer) - offset - needle_length + 1);
+            list_header(buffer)->length -= (needle_length - replace_length);
         }
     }
 

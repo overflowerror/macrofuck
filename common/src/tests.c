@@ -100,7 +100,7 @@ void test_strbuf_replace_shorter_length(void) {
 
     assert_streq("hello ba world ba !", buffer, "buffer doesn't match");
     printf("%lu, %zu\n", strlen(buffer), list_size(buffer));
-    assert_equals(strlen(buffer) + 1 + 2, list_size(buffer), "allocation doesn't match");
+    assert_equals(strlen(buffer) + 1, list_size(buffer), "allocation doesn't match");
 
     strbuf_free(buffer);
 }
@@ -113,7 +113,20 @@ void test_strbuf_replace_greater_length(void) {
 
     assert_streq("hello barr world barr !", buffer, "buffer doesn't match");
     printf("%lu, %zu\n", strlen(buffer), list_size(buffer));
-    assert_equals(strlen(buffer) - 1, list_size(buffer), "allocation doesn't match");
+    assert_equals(strlen(buffer) + 1, list_size(buffer), "allocation doesn't match");
+
+    strbuf_free(buffer);
+}
+
+void test_strbuf_replace_bug_realloc_moves(void) {
+    strbuf_t buffer = strbuf_new();
+    strbuf_append(buffer, "hello foo world foo !");
+
+    strbuf_replace(buffer, "foo", "a very long string that will cause the region to be too small");
+
+    assert_streq("hello a very long string that will cause the region to be too small world a very long string that will cause the region to be too small !", buffer, "buffer doesn't match");
+    printf("%lu, %zu\n", strlen(buffer), list_size(buffer));
+    assert_equals(strlen(buffer) + 1, list_size(buffer), "allocation doesn't match");
 
     strbuf_free(buffer);
 }
@@ -130,6 +143,7 @@ int main(void) {
     test_run(test_strbuf_replace_equal_length);
     test_run(test_strbuf_replace_shorter_length);
     test_run(test_strbuf_replace_greater_length);
+    test_run(test_strbuf_replace_bug_realloc_moves);
 
     if (test_results()) {
         return 0;
