@@ -132,7 +132,7 @@ static void handle_macro_definition(void) {
 }
 
 char** split_arguments(char* str) {
-    strbuf_t* argument_list = list_new(char*);
+    char** argument_list = list_new(char*);
 
     strbuf_t argument = strbuf_new();
 
@@ -175,7 +175,7 @@ void handle_macro_call(void) {
         panic("preprocessor error");
     }
 
-    strbuf_t* args = split_arguments(args_string);
+    char** args = split_arguments(args_string);
 
     size_t given_argc = list_size(args);
     size_t expected_argc = list_size(macro->argument_list);
@@ -197,7 +197,7 @@ void handle_macro_call(void) {
 
         strbuf_replace(result, arg_id_with_prefix, args[i]);
 
-        strbuf_free(args[i]);
+        free(args[i]);
     }
 
     list_free(args);
