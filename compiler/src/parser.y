@@ -99,7 +99,9 @@ stats:    /* empty */
 	| stats stat
 		{
 			$$ = $1;
-			block_add_statement($$, $2);
+			if ($2 != NULL) {
+			    block_add_statement($$, $2);
+			}
 		}
 ;
 
@@ -109,6 +111,10 @@ stat: definition SEMICOLON
 	| if
 	| while
 	| map
+	| SEMICOLON
+	    {
+	        $$ = NULL;
+	    }
 ;
 
 definition: VAR assignment
