@@ -1,0 +1,5 @@
+#macro test(a, b, c) {
+    print($a, $b, $c, '\n')
+}
+
+test$('f', 'o', 'o');

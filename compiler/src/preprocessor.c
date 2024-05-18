@@ -95,13 +95,16 @@ static void handle_macro_definition(void) {
                 fprintf(stderr, "preprocessor: macro: , expected, got: %s\n", yytext);
                 panic("preprocessor syntax error");
             }
-        } else {
-            if (token != ID) {
-                fprintf(stderr, "preprocessor: macro: identifier expected, got: %s\n", yytext);
-                panic("preprocessor syntax error");
-            }
-            list_add(macro->argument_list, yylval.id);
+
+            token = yylex();
         }
+
+        if (token != ID) {
+            fprintf(stderr, "preprocessor: macro: identifier expected, got: %s\n", yytext);
+            panic("preprocessor syntax error");
+        }
+        list_add(macro->argument_list, yylval.id);
+        is_first = false;
     }
 
     token = yylex();
