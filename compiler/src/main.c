@@ -10,6 +10,8 @@
 
 #define EXIT_ARGS_ERROR (3)
 
+const char* input_filename = NULL;
+
 extern FILE* yyin;
 extern int yyparse(void);
 extern int yydebug;
@@ -58,6 +60,7 @@ int main(int argc, char** argv) {
 	if (!input) {
 		panic("fopen");
 	}
+    input_filename = argv[optind];
 
 	if (!output) {
 		output = fopen("m.gen.bf", "w+");

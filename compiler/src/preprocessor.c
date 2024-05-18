@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <alloca.h>
+#include <libgen.h>
 
 #include "y.tab.h"
 
@@ -18,6 +19,8 @@ int yylex(void);
 extern char* yytext;
 extern YYSTYPE yylval;
 
+extern const char* input_filename;
+
 static void handle_include(void) {
     int token = yylex();
 
@@ -26,11 +29,29 @@ static void handle_include(void) {
         panic("preprocessor syntax error");
     }
 
-    const char* filename = yylval.str;
+    char* input = strdup(input_filename);
+    char* relative_path = strdup(dirname(input));
+    free(input);
+
+    char* filename = strdup(yylval.str);
+
+    if (filename[0] != '/') {
+        strbuf_t buffer = strbuf_from(relative_path);
+        strbuf_append_c(buffer, '/');
+        strbuf_append(buffer, filename);
+        free(filename);
+        filename = strdup(buffer);
+        strbuf_free(buffer);
+    }
+
+    free(relative_path);
+
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
         panic("file not found");
     }
+
+    free(filename);
 
     push_file_to_yy_stack(file);
 }
