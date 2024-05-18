@@ -13,7 +13,7 @@ map     "map"
 rmap    "rmap"
 in      "in"
 
-char    "'"([^\\]|[\\]n|[\\]t|[\\]{2})"'"
+char    "'"([^\\]|[\\]n|[\\]t|[\\]r|[\\]{2})"'"
 id		[a-zA-Z_][a-zA-Z0-9_]*
 
 include "#include"
@@ -58,6 +58,7 @@ char char_escape(const char* yytext) {
         if (yytext[2] == '\\')     return '\\';
         else if (yytext[2] == 'n') return '\n';
         else if (yytext[2] == 't') return '\t';
+        else if (yytext[2] == 'r') return '\r';
         else lex_panic("unknown escape sequence: %s\n", yytext);
     } else {
         return yytext[1];
@@ -118,6 +119,7 @@ int nested_braces = 0;
 <STRING>[^\\"\n]*   { strbuf_append(strbuf, yytext); }
 <STRING>\\n		    { strbuf_append_c(strbuf, '\n'); }
 <STRING>\\t		    { strbuf_append_c(strbuf, '\t'); }
+<STRING>\\r		    { strbuf_append_c(strbuf, '\r'); }
 <STRING>\\[0-7]*	{ strbuf_append_c(strbuf, strtol(yytext+1, 0, 8)); }
 <STRING>\\[\\"]		{ strbuf_append_c(strbuf, yytext[1]); }
 <STRING>\"          { yylval.str = strdup(strbuf); BEGIN INITIAL; return STR; }
